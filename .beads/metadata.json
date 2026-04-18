@@ -1,0 +1,7 @@
+{
+  "database": "dolt",
+  "backend": "dolt",
+  "dolt_mode": "embedded",
+  "dolt_database": "cachyOS",
+  "project_id": "88b84438-1e8d-4c0b-bb49-287496588fca"
+}
