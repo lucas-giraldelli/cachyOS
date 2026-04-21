@@ -1,0 +1,39 @@
+font=MesloLGS Nerd Font 12
+background-color=#1a1b26ee
+text-color=#c0caf5
+border-color=#33ccff66
+border-radius=12
+border-size=1
+padding=16
+margin=10
+width=320
+default-timeout=5000
+anchor=bottom-right
+layer=overlay
+icons=0
+markup=0
+ignore-timeout=1
+format=%s\n%b
+
+[app-name=Chromium]
+format=%s\nNew message
+
+[app-name=Chromium summary="Amor nene"]
+format=Thyci \nNew message
+border-color=#f7768ecc
+text-color=#f7768e
+
+[urgency=low]
+border-color=#565f8966
+background-color=#1a1b26cc
+default-timeout=3000
+
+[urgency=normal]
+border-color=#33ccff66
+default-timeout=5000
+
+[urgency=critical]
+background-color=#1a1b26ee
+border-color=#f7768ecc
+text-color=#f7768e
+default-timeout=0
