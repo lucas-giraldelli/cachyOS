@@ -4,7 +4,7 @@
     "spacing": 4,
 
     "modules-left": ["hyprland/workspaces", "hyprland/submap"],
-    "modules-center": ["mpris"],
+    "modules-center": ["custom/ytmusic"],
     "modules-right": ["custom/capslock", "tray", "custom/docker", "cpu", "memory", "custom/gpu", "custom/power", "pulseaudio", "custom/network", "custom/date", "clock"],
 
     "hyprland/workspaces": {
@@ -12,10 +12,10 @@
         "all-outputs": true,
         "format": "{icon}",
         "persistent-workspaces": {
-            "1": [], "2": [], "3": [], "4": [], "5": [], "6": [], "7": []
+            "1": [], "2": [], "3": [], "4": [], "5": [], "6": [], "7": [], "8": []
         },
         "format-icons": {
-            "1": "󰋜", "2": "󰊢", "3": "󰨞", "4": "󰖟", "5": "󰊗", "6": "󰇮", "7": "󰝚"
+            "1": "󰋜", "2": "󰊢", "3": "󰨞", "4": "󰖟", "5": "󰊗", "6": "󰆼", "7": "󰝚", "8": "󰇮"
         }
     },
 
@@ -67,26 +67,13 @@
         "format": "{}"
     },
 
-    "mpris": {
-        "player": "chromium",
-        "format": "󰝚  {artist} - {title}  {player_icon}",
-        "format-paused": "",
-        "format-stopped": "",
-        "player-icons": {
-            "chromium": "󰊯",
-            "spotify": "󰓇",
-            "firefox": "󰈹",
-            "zen": "󰈹",
-            "default": "󰎆"
-        },
-        "status-icons": {
-            "paused": "󰏤",
-            "playing": "󰐊"
-        },
-        "max-length": 60,
-        "ignored-players": ["firefox", "zen"],
-        "on-click": "playerctl play-pause",
-        "on-click-right": "playerctl next"
+    "custom/ytmusic": {
+        "exec": "~/.config/waybar/scripts/ytmusic.sh",
+        "return-type": "json",
+        "interval": 2,
+        "on-click": "playerctl -p $(playerctl -l 2>/dev/null | grep chromium | head -1) play-pause",
+        "on-click-right": "playerctl -p $(playerctl -l 2>/dev/null | grep chromium | head -1) next",
+        "max-length": 60
     },
 
     "pulseaudio": {
