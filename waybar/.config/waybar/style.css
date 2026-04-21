@@ -1,0 +1,145 @@
+* {
+    border: none;
+    border-radius: 0;
+    font-family: "MesloLGS Nerd Font", monospace;
+    font-size: 14px;
+    min-height: 0;
+}
+
+window#waybar {
+    background: transparent;
+    color: white;
+}
+
+#workspaces {
+    background-color: #1a1b26;
+    margin: 5px 5px 5px 10px;
+    border-radius: 8px;
+}
+
+#workspaces button {
+    padding: 4px 10px;
+    color: #565f89;
+    background-color: transparent;
+    border-radius: 8px;
+}
+
+#workspaces button.active,
+#workspaces button.focused {
+    background-color: #24283b;
+    color: #c0caf5;
+    border-radius: 8px;
+}
+
+#workspaces button:hover {
+    background-color: #24283b;
+    color: #c0caf5;
+    border-radius: 8px;
+}
+
+#tray,
+#custom-docker,
+#custom-capslock,
+#cpu,
+#memory,
+#custom-gpu,
+#custom-power,
+#pulseaudio,
+#custom-network,
+#custom-date,
+#clock {
+    background-color: #1a1b26;
+    padding: 4px 12px;
+    margin: 5px 0;
+}
+
+#tray {
+    border-radius: 8px 0 0 8px;
+    margin-left: 10px;
+    padding: 4px 8px;
+}
+
+#custom-docker {
+    padding: 4px 10px;
+}
+
+#custom-docker.ok {
+    color: #2496ed;
+}
+
+#custom-docker.warn {
+    color: #e0af68;
+}
+
+#custom-docker.dead {
+    color: #f7768e;
+}
+
+#custom-capslock {
+    font-size: 16px;
+    padding: 4px 10px;
+}
+
+#custom-capslock.on {
+    color: #50fa7b;
+}
+
+#custom-capslock.off {
+    color: #f7768e;
+}
+
+#submap {
+    background-color: #1a1b26;
+    padding: 4px 12px;
+    margin: 5px 0;
+    border-radius: 0 8px 8px 0;
+    color: #33ccff;
+    font-weight: bold;
+}
+
+#cpu {
+    color: #f7768e;
+}
+
+#memory {
+    color: #9ece6a;
+}
+
+#custom-gpu {
+    color: #7dcfff;
+}
+
+#custom-power {
+    color: #f9e2af;
+}
+
+#pulseaudio {
+    color: #e0af68;
+}
+
+#custom-network {
+    color: #00ff99;
+}
+
+#custom-network.dead {
+    color: #f7768e;
+}
+
+#custom-date {
+    color: #bb9af7;
+}
+
+#clock {
+    color: #e0af68;
+    border-radius: 0 8px 8px 0;
+    margin-right: 10px;
+}
+
+#mpris {
+    color: #c0caf5;
+    padding: 0 12px;
+}
+
+#mpris.paused {
+    color: #565f89;
+}

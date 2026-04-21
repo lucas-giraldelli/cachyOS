@@ -1,0 +1,87 @@
+configuration {
+    modi: "drun,run";
+    show-icons: true;
+    icon-theme: "Papirus-Dark";
+    font: "MesloLGS Nerd Font 13";
+    drun-display-format: "{name}";
+    display-drun: "  Apps";
+}
+
+* {
+    bg:      #1a1b26;
+    bg-alt:  #24283b;
+    fg:      #c0caf5;
+    fg-dim:  #565f89;
+    cyan:    #33ccff;
+    green:   #00ff99;
+    urgent:  #f7768e;
+
+    background-color: transparent;
+    text-color:       @fg;
+}
+
+window {
+    background-color: @bg;
+    border:           2px;
+    border-color:     @cyan;
+    border-radius:    12px;
+    width:            500px;
+    padding:          12px;
+}
+
+mainbox {
+    background-color: transparent;
+    children: [inputbar, listview];
+    spacing: 8px;
+}
+
+inputbar {
+    background-color: @bg-alt;
+    border-radius:    8px;
+    padding:          10px 14px;
+    children:         [prompt, entry];
+    spacing:          8px;
+}
+
+prompt {
+    text-color: @cyan;
+}
+
+entry {
+    text-color:        @fg;
+    placeholder:       "Search...";
+    placeholder-color: @fg-dim;
+}
+
+listview {
+    background-color: transparent;
+    lines:            8;
+    scrollbar:        false;
+    spacing:          4px;
+}
+
+element {
+    background-color: @bg;
+    text-color:       @fg-dim;
+    border-radius:    8px;
+    padding:          8px 12px;
+    spacing:          10px;
+    children:         [element-icon, element-text];
+}
+
+element selected {
+    background-color: @bg;
+    text-color:       #ffffff;
+    border:           0 0 0 3px;
+    border-color:     @cyan;
+    border-radius:    8px;
+}
+
+element-icon {
+    size: 24px;
+}
+
+element-text {
+    text-color: inherit;
+    vertical-align: 0.5;
+}

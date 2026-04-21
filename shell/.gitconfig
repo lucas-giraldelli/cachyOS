@@ -1,0 +1,20 @@
+[safe]
+	directory = D:/Company/Treez/treez-rest-services
+	directory = D:/Company/Treez/Treez
+	directory = D:/Company/Treez/Treez
+	directory = D:/Company/Treez/treez-label-designer-ui
+	directory = D:/Company/Treez/product-merge-mfe
+	directory = D:/Company/Treez/product-control-mfe
+	directory = *
+[user]
+	email = vinicius.giraldelli@hotmail.com
+	name = Lucas Giraldelli
+[core]
+	autocrlf = false
+	excludesfile = /home/lukesh/.gitignore_global
+[alias]
+	mr = \\!sh -c 'git fetch $1 merge-requests/$2/head:mr-$1-$2 && git checkout mr-$1-$2' -
+	pull-latest = \\!git fetch origin main:main && git merge main --no-edit && git push
+	create-tree = "!f() { \\\n      if git worktree list | grep -q \".worktrees/$1\"; then \\\n          echo \"Worktree already exists for this branch in .worktrees/$1\"; \\\n      elif git rev-parse --verify \"$1\" >/dev/null 2>&1; then \\\n          echo \"Existing branch detected. Creating worktree in .worktrees/$1...\"; \\\n          git worktree add \".worktrees/$1\" \"$1\" && \\\n          cd \".worktrees/$1\" && \\\n          ln -sf ../../node_modules node_modules && \\\n          ln -sf ../../.cert .cert; \\\n      else \\\n          echo \"New branch detected. Creating branch and worktree in .worktrees/$1...\"; \\\n          git worktree add \".worktrees/$1\" -b \"$1\" && \\\n          cd \".worktrees/$1\" && \\\n          ln -sf ../../node_modules node_modules && \\\n          ln -sf ../../.cert .cert; \\\n      fi; \\\n  }; f"
+[credential]
+	helper = /usr/lib/git-core/git-credential-libsecret

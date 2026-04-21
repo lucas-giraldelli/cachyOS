@@ -1,0 +1,7 @@
+[Desktop Entry]
+Name=WhatsApp
+Exec=env GTK_IM_MODULE=fcitx XMODIFIERS=@im=fcitx chromium --class=whatsapp --user-data-dir=/home/lukesh/.config/chromium-personal --app=https://web.whatsapp.com --load-extension=/home/lukesh/.config/chromium-wa-ext
+Icon=whatsapp
+Type=Application
+Categories=Network;InstantMessaging;
+StartupWMClass=whatsapp
