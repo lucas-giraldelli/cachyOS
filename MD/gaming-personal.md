@@ -9,10 +9,12 @@ Setup: AMD Ryzen 7 5800X3D · RTX 4080 16GB · 48GB RAM · CachyOS (Arch-based) 
 ### Launch Options Template
 
 ```
-WINEESYNC=1 WINEFSYNC=1 DXVK_ASYNC=1 PROTON_NVIDIA_LIBS_NO_32BIT=1 __GL_SHADER_DISK_CACHE_SKIP_CLEANUP=1 MANGOHUD=1 MANGOHUD_CONFIG=position=top-right game-performance %command%
+WINEESYNC=1 WINEFSYNC=1 DXVK_ASYNC=1 PROTON_NVIDIA_LIBS_NO_32BIT=1 __GL_SHADER_DISK_CACHE_SKIP_CLEANUP=1 MANGOHUD=1 MANGOHUD_CONFIG=position=top-right,no_display,frame_timing=1 game-performance %command%
 ```
 
 Append game-specific flags after `%command%` (e.g. `-dx11`).
+
+> `MANGOHUD_CONFIG=position=top-right,no_display,frame_timing=1` — shows only the frametime graph. Frametime is more useful than FPS: a stable 60fps with spiking frametimes means stutters; frametime exposes that instantly.
 
 | Variable | Why |
 |----------|-----|
@@ -93,7 +95,7 @@ input {
 
 **Launch options**:
 ```
-WINEESYNC=1 WINEFSYNC=1 DXVK_ASYNC=1 PROTON_NVIDIA_LIBS_NO_32BIT=1 __GL_SHADER_DISK_CACHE_SKIP_CLEANUP=1 MANGOHUD=1 MANGOHUD_CONFIG=position=top-right game-performance %command% -dx11
+WINEESYNC=1 WINEFSYNC=1 DXVK_ASYNC=1 PROTON_NVIDIA_LIBS_NO_32BIT=1 __GL_SHADER_DISK_CACHE_SKIP_CLEANUP=1 MANGOHUD=1 MANGOHUD_CONFIG=position=top-right,no_display,frame_timing=1 game-performance %command% -dx11
 ```
 
 **Why DX11**: Tested DX12 — severe micro-stutters throughout matches. Switching to DX11/DXVK resolved the frametime inconsistency almost entirely. This is the Nvidia/DX12 driver bug described above.
@@ -106,6 +108,18 @@ WINEESYNC=1 WINEFSYNC=1 DXVK_ASYNC=1 PROTON_NVIDIA_LIBS_NO_32BIT=1 __GL_SHADER_D
 - Stopped TNS Docker stack during gaming (OpenSearch/Redis/MariaDB eating CPU/RAM)
 
 ---
+
+### Slay the Spire 2
+
+**Proton version**: Proton-GE  
+**API**: Unity (OpenGL/Vulkan nativo — sem DXVK)
+
+**Launch options**:
+```
+WINEESYNC=1 WINEFSYNC=1 PROTON_NVIDIA_LIBS_NO_32BIT=1 __GL_SHADER_DISK_CACHE_SKIP_CLEANUP=1 MANGOHUD=1 MANGOHUD_CONFIG=position=top-right,no_display,frame_timing=1 game-performance %command%
+```
+
+> Sem `DXVK_ASYNC=1` — Unity não usa DX9/10/11, DXVK não se aplica.
 
 ## Troubleshooting Checklist
 
