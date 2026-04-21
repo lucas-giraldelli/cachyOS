@@ -1,0 +1,7 @@
+[Desktop Entry]
+Name=YouTube Music
+Exec=chromium --app=https://music.youtube.com --class=youtube-music --user-data-dir=/home/lukesh/.config/chromium-ytmusic
+Icon=chromium
+Type=Application
+Categories=AudioVideo;
+StartupWMClass=youtube-music

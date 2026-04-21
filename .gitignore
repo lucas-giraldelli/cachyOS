@@ -3,3 +3,9 @@
 .dolt/
 *.db
 .beads-credential-key
+
+# secrets / cache
+shell/.npmrc
+waybar/.config/waybar/scripts/*.log
+**/__pycache__/
+.claude/settings.local.json

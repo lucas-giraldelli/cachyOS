@@ -50,20 +50,57 @@ bd close <id>         # Complete work
 <!-- END BEADS INTEGRATION -->
 
 
+## System Overview
+
+### OS & Kernel
+- **CachyOS Linux** (rolling release, Arch-based)
+- Kernel: `6.19.12-1-cachyos`
+- AUR helper: `paru v2.1.0` — use `paru` instead of `pacman` for installs
+
+### Hardware
+| Component | Spec |
+|-----------|------|
+| CPU | AMD Ryzen 7 5800X3D (8c/16t) |
+| RAM | 48 GB |
+| GPU | NVIDIA RTX 4080 16GB — driver `595.58.03` |
+| Storage | NVMe Samsung 980 1TB (root+home), Kingston SSD 480GB, WD HDD 2TB |
+| Monitor | Samsung Odyssey G60SD — 2560x1440 @ 360Hz via DP-2 |
+| Mouse | Razer Naga Left-Handed Edition + vitvlkv Avalanche |
+
+### Desktop Environment
+- **Window Manager**: Hyprland `0.54.3` on **Wayland**
+- Bar: `waybar`
+- Launcher: `rofi`, `wofi`
+- Notifications: `dunst`
+- Terminals: `kitty` (primary), `alacritty`
+- Browsers: `zen-browser`, `chromium`
+- Media: `vlc`
+- Gaming: `steam`
+
+### Applications
+| App | Type | Details |
+|-----|------|---------|
+| WhatsApp | Chromium PWA | `--class=whatsapp`, `--app=https://web.whatsapp.com`, profile: `~/.config/chromium-personal`, extension: `~/.config/chromium-wa-ext`, desktop: `~/.local/share/applications/whatsapp.desktop`, pinned to workspace 7 |
+
+### Wayland Rules
+- **NEVER suggest `xinput`** — it doesn't work on Wayland/Hyprland
+- Mouse/input config lives in `~/.config/hypr/hyprland.conf` under the `input {}` block
+- Current mouse sensitivity: `-0.5` (range: -1.0 to 1.0)
+- To change mouse speed: edit `sensitivity` in `~/.config/hypr/hyprland.conf`, then `hyprctl reload`
+- Per-device config: use `device { name=...; sensitivity=... }` in hyprland.conf
+
+### Package Management
+- Use `paru` for everything (wraps pacman + AUR)
+- `paru -S <pkg>` to install, `paru -Rns <pkg>` to remove with deps
+- Before suggesting a package install, check if it's already installed: `paru -Q <pkg>`
+- Before suggesting a tool, check if it works on Wayland/Hyprland
+
 ## Build & Test
 
 _Add your build and test commands here_
 
-```bash
-# Example:
-# npm install
-# npm test
-```
-
-## Architecture Overview
-
-_Add a brief overview of your project architecture_
-
 ## Conventions & Patterns
 
-_Add your project-specific conventions here_
+- Always verify tools work on **Wayland** before suggesting them
+- Always check with `paru -Q` before suggesting installs
+- Config files for Hyprland: `~/.config/hypr/`

@@ -1,0 +1,120 @@
+{
+    "position": "bottom",
+    "height": 32,
+    "spacing": 4,
+
+    "modules-left": ["hyprland/workspaces", "hyprland/submap"],
+    "modules-center": ["mpris"],
+    "modules-right": ["custom/capslock", "tray", "custom/docker", "cpu", "memory", "custom/gpu", "custom/power", "pulseaudio", "custom/network", "custom/date", "clock"],
+
+    "hyprland/workspaces": {
+        "disable-scroll": false,
+        "all-outputs": true,
+        "format": "{icon}",
+        "persistent-workspaces": {
+            "1": [], "2": [], "3": [], "4": [], "5": [], "6": [], "7": []
+        },
+        "format-icons": {
+            "1": "󰋜", "2": "󰊢", "3": "󰨞", "4": "󰖟", "5": "󰊗", "6": "󰇮", "7": "󰝚"
+        }
+    },
+
+    "custom/docker": {
+        "exec": "~/.config/waybar/scripts/docker-status.sh",
+        "return-type": "json",
+        "interval": 10,
+        "on-click": "kitty --title lazydocker sh -c 'cd /mnt/main/dns && lazydocker'"
+    },
+
+    "cpu": {
+        "format": "󰍛  {usage}%",
+        "tooltip-format": "CPU: {usage}%\nLoad: {load}",
+        "interval": 2
+    },
+
+    "memory": {
+        "format": "󰘚  {avail:0.0f}GB",
+        "tooltip-format": "Disponível: {avail:0.1f}GB\nUsado: {used:0.1f}GB / {total:0.1f}GB",
+        "interval": 2
+    },
+
+    "custom/gpu": {
+        "exec": "~/.config/waybar/scripts/gpu-usage.sh",
+        "return-type": "json",
+        "interval": 2
+    },
+
+    "custom/power": {
+        "exec": "/home/lukesh/.config/waybar/scripts/power-status.sh",
+        "return-type": "json",
+        "interval": 300
+    },
+
+    "tray": {
+        "spacing": 8
+    },
+
+    "hyprland/submap": {
+        "format": "󰩨  {}",
+        "default-label": "",
+        "tooltip": false
+    },
+
+    "custom/capslock": {
+        "exec": "cat /sys/class/leds/input*::capslock/brightness 2>/dev/null | grep -qm1 '1' && echo '{\"text\": \"⇪\", \"class\": \"on\"}' || echo '{\"text\": \"⇪\", \"class\": \"off\"}'",
+        "interval": 1,
+        "return-type": "json",
+        "format": "{}"
+    },
+
+    "mpris": {
+        "player": "chromium",
+        "format": "󰝚  {artist} - {title}  {player_icon}",
+        "format-paused": "",
+        "format-stopped": "",
+        "player-icons": {
+            "chromium": "󰊯",
+            "spotify": "󰓇",
+            "firefox": "󰈹",
+            "zen": "󰈹",
+            "default": "󰎆"
+        },
+        "status-icons": {
+            "paused": "󰏤",
+            "playing": "󰐊"
+        },
+        "max-length": 60,
+        "ignored-players": ["firefox", "zen"],
+        "on-click": "playerctl play-pause",
+        "on-click-right": "playerctl next"
+    },
+
+    "pulseaudio": {
+        "format": "{icon}  {volume}%",
+        "format-muted": "󰖁  Muted",
+        "on-click": "pavucontrol",
+        "on-click-right": "wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle",
+        "format-icons": {
+            "default": ["󰕿", "󰖀", "󰕾"]
+        }
+    },
+
+    "custom/network": {
+        "exec": "~/.config/waybar/scripts/network-status.sh",
+        "return-type": "json",
+        "interval": 10
+    },
+
+    "custom/date": {
+        "exec": "python3 ~/.config/waybar/scripts/calendar.py",
+        "return-type": "json",
+        "interval": 300,
+        "format": "󰸗  {}",
+        "on-click": "bash ~/.config/waybar/scripts/calendar-popup.sh"
+    },
+
+    "clock": {
+        "format": "󰅐  {:%H:%M}",
+        "tooltip-format": "<big>{:%Y %B}</big>\n<tt><small>{calendar}</small></tt>"
+    }
+}

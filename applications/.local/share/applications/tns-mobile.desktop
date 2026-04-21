@@ -1,0 +1,7 @@
+[Desktop Entry]
+Name=TNS Mobile (390)
+Exec=chromium --class=tns-mobile --user-data-dir=/home/lukesh/.config/chromium-tns-mobile --new-window http://tns.local
+Icon=chromium
+Type=Application
+Categories=Development;
+StartupWMClass=tns-mobile
