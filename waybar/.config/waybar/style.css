@@ -47,7 +47,8 @@ window#waybar {
 #pulseaudio,
 #custom-network,
 #custom-date,
-#clock {
+#clock,
+#custom-ytmusic {
     background-color: #1a1b26;
     padding: 4px 12px;
     margin: 5px 0;
@@ -111,6 +112,15 @@ window#waybar {
 
 #custom-power {
     color: #f9e2af;
+}
+
+#custom-ytmusic {
+    color: #bb9af7;
+    border-radius: 8px;
+}
+
+#custom-ytmusic.paused {
+    color: #565f89;
 }
 
 #pulseaudio {
