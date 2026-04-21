@@ -68,9 +68,10 @@
     },
 
     "custom/ytmusic": {
-        "exec": "~/.config/waybar/scripts/ytmusic.sh",
+        "exec": "/home/lukesh/.config/waybar/scripts/ytmusic.sh",
         "return-type": "json",
         "interval": 2,
+        "escape": true,
         "on-click": "playerctl -p $(playerctl -l 2>/dev/null | grep chromium | head -1) play-pause",
         "on-click-right": "playerctl -p $(playerctl -l 2>/dev/null | grep chromium | head -1) next",
         "max-length": 60
