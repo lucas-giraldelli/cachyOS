@@ -1,7 +1,7 @@
 #!/bin/bash
 
 WHATSAPP_MARKER="web.whatsapp.com"
-WHATSAPP_VOLUME="30%"
+WHATSAPP_VOLUME="60%"
 DEFAULT_VOLUME="100%"
 
 set_volume() {
