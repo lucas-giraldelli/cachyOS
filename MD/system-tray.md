@@ -2,67 +2,90 @@
 
 ## Root Cause of Missing Tray Icons
 
-On Wayland, system tray icons use the **StatusNotifierItem (SNI)** D-Bus protocol. The SNI watcher must be owned by the bar (waybar) before apps register their icons. Two things break this:
+On Wayland, system tray icons use the **StatusNotifierItem (SNI)** D-Bus protocol. The SNI watcher must be owned by waybar before apps register their icons. Two things break this:
 
 1. **kded6 stealing the SNI watcher** — KDE daemon starts early and claims the watcher, so apps register to kded6 instead of waybar. Icons never appear.
-2. **Electron apps using Wayland backend** — When Electron runs natively on Wayland (`--ozone-platform=wayland`), it bypasses `libappindicator-gtk3` entirely and doesn't emit a StatusNotifierItem. The icon is simply never registered on D-Bus.
+2. **Waybar restart** — When waybar is killed and restarted, all Electron apps lose their SNI registration and must be restarted too.
 
-You can confirm what's registered on D-Bus:
+Check what's currently registered:
 ```bash
-dbus-monitor --session "interface='org.kde.StatusNotifierWatcher'" 2>/dev/null &
-# Then launch the app and watch for RegisterStatusNotifierItem calls
+gdbus call --session --dest org.kde.StatusNotifierWatcher --object-path /StatusNotifierWatcher \
+  --method org.freedesktop.DBus.Properties.Get org.kde.StatusNotifierWatcher RegisteredStatusNotifierItems
+```
+
+Check who owns the SNI watcher:
+```bash
+gdbus call --session --dest org.freedesktop.DBus --object-path /org/freedesktop/DBus \
+  --method org.freedesktop.DBus.GetNameOwner org.kde.StatusNotifierWatcher
 ```
 
 ---
 
-## kded6 Fix
+## kded6 Permanent Fix
 
-kded6 can steal the SNI watcher on session start. If waybar loads after kded6, apps register to kded6 and icons disappear.
+kded6 steals the SNI watcher on session start. Block its `statusnotifierwatcher` module permanently:
 
-**Temporary fix:**
 ```bash
+# Disable the module
+cat > ~/.config/kded6rc << 'EOF'
+[Module-statusnotifierwatcher]
+autoload=false
+EOF
+
+# Fix immediately (kill kded6 so waybar takes over)
 pkill kded6
 pkill waybar
 waybar &
 ```
 
-**Permanent fix:** ensure waybar starts before kded6, or block kded6's `statusnotifierwatcher` module. Check `~/.config/hypr/hyprland.conf` autostart ordering.
+This survives reboots. kded6 will still start but won't load the SNI watcher module.
+
+**After waybar restarts**, all tray apps (Slack, Vesktop, etc.) must be restarted — they won't re-register automatically.
 
 ---
 
 ## Discord — Use Vesktop
 
-The official Discord Linux client has a long-standing unfixed bug where the tray icon does not register on Wayland. The community solution is **Vesktop**:
+The official Discord Linux client has a long-standing unfixed bug where the tray icon does not register on Wayland.
 
+**Solution:** use Vesktop instead:
 ```bash
 paru -S vesktop
 ```
 
-Vesktop is an unofficial Discord client built on Vencord (optional mods). It has native Wayland support and correctly registers the SNI tray icon in waybar. Functionally identical to Discord for daily use.
+Vesktop is an unofficial Discord client built on Vencord (optional mods). It has native Wayland support and correctly registers the SNI tray icon in waybar. Functionally identical to Discord.
+
+Hyprland windowrule: floats on workspace 5, centered.
 
 ---
 
-## Slack — Force XWayland
-
-Slack ships with Wayland flags that disable libappindicator, so the tray icon is never registered. Fix: force it to run via XWayland.
+## Slack — Working Configuration
 
 **`~/.local/share/applications/slack.desktop`:**
 ```ini
-Exec=env XDG_CURRENT_DESKTOP=Unity ELECTRON_OZONE_PLATFORM_HINT=x11 /usr/bin/slack --ozone-platform=x11 --disable-gpu-sandbox -s %U
+Exec=env XDG_CURRENT_DESKTOP=Unity /usr/bin/slack --disable-gpu-sandbox %U
 ```
 
-Key flags:
-- `ELECTRON_OZONE_PLATFORM_HINT=x11` — tells Electron to prefer X11 before the app parses argv
-- `--ozone-platform=x11` — forces XWayland backend
-- `XDG_CURRENT_DESKTOP=Unity` — triggers libappindicator SNI registration path in Electron
+- `XDG_CURRENT_DESKTOP=Unity` — triggers libappindicator SNI registration
+- `--disable-gpu-sandbox` — required for GPU/sandbox compatibility
+- **Do NOT add** `--ozone-platform=x11` or `ELECTRON_OZONE_PLATFORM_HINT=x11` — causes Slack to fail to start or open without a window on this setup
 
-After editing the `.desktop`, kill and relaunch Slack from the app launcher (not terminal) so it picks up the new flags.
+If Slack won't open after pkill, remove stale singleton locks:
+```bash
+rm -f ~/.config/Slack/Singleton*
+```
+
+Then relaunch from rofi (not terminal — terminal lacks the Hyprland env vars).
 
 ---
 
-## Why `XDG_CURRENT_DESKTOP=Unity` Alone Isn't Enough
+## hyprpolkitagent
 
-This is a common suggestion but it only works when Electron is running on X11/XWayland. If Electron is using the Wayland backend, it skips libappindicator entirely regardless of `XDG_CURRENT_DESKTOP`. Both flags are required together.
+Required for apps that use `pkexec` (e.g. OpenVPN Connect). Without it, elevated processes silently fail with exit code 127.
+
+Binary path: `/usr/lib/hyprpolkitagent/hyprpolkitagent`  
+Enabled via: `systemctl --user enable hyprpolkitagent`  
+Autostart in hyprland.conf: `exec-once = /usr/lib/hyprpolkitagent/hyprpolkitagent`
 
 ---
 
@@ -71,6 +94,7 @@ This is a common suggestion but it only works when Electron is running on X11/XW
 | App | Problem | Fix |
 |-----|---------|-----|
 | Discord | Native client never registers SNI on Wayland | Use Vesktop instead |
-| Slack | Ships with `--ozone-platform=wayland`, skips libappindicator | Force XWayland + `XDG_CURRENT_DESKTOP=Unity` in `.desktop` |
-| Any Electron app | Same Wayland backend issue | Add `ELECTRON_OZONE_PLATFORM_HINT=x11 --ozone-platform=x11` |
-| All icons missing | kded6 stole the SNI watcher | `pkill kded6 && pkill waybar && waybar &` |
+| Slack | Wrong flags cause no window / no tray | `XDG_CURRENT_DESKTOP=Unity --disable-gpu-sandbox` only |
+| All icons missing | kded6 stole SNI watcher | `~/.config/kded6rc` disables module permanently |
+| Icons gone after waybar restart | Apps don't re-register SNI automatically | Restart each tray app after waybar restarts |
+| pkexec fails silently (exit 127) | hyprpolkitagent not running | `systemctl --user enable --now hyprpolkitagent` |
