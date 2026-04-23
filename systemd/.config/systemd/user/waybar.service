@@ -7,6 +7,7 @@ Wants=graphical-session.target
 ExecStartPre=-/usr/bin/pkill kded6
 ExecStartPre=/bin/sleep 0.5
 ExecStart=/usr/bin/waybar
+ExecStartPost=/bin/bash -c '(/home/lukesh/.config/waybar/tray-restart.sh) &'
 StandardOutput=append:%h/.config/waybar/waybar.log
 StandardError=append:%h/.config/waybar/waybar.log
 Restart=on-failure
