@@ -15,3 +15,9 @@ if pgrep -x vesktop > /dev/null; then
     sleep 1
     vesktop &
 fi
+
+if pgrep -x openvpn-connect > /dev/null; then
+    pkill -x openvpn-connect
+    sleep 1
+    openvpn-connect &
+fi
