@@ -89,6 +89,28 @@ Autostart in hyprland.conf: `exec-once = /usr/lib/hyprpolkitagent/hyprpolkitagen
 
 ---
 
+## nm-applet — Ícone (?) no tray
+
+O `network-manager-applet` não renderiza no Wayland/waybar e aparece como `(?)`. Não é necessário — setup usa ethernet estática e OpenVPN Connect tem tray próprio.
+
+**Remover:**
+```bash
+paru -Rns network-manager-applet
+pkill nm-applet  # matar instância atual sem reiniciar
+```
+
+O pacote vinha de `/etc/xdg/autostart/nm-applet.desktop` (global do sistema).
+
+---
+
+## fcitx5 — Clipboard popup conflitando com atalhos
+
+O addon **Clipboard** do fcitx5 usa `Super+;` como trigger padrão, abrindo o histórico de Ctrl+C/V inesperadamente.
+
+**Fix:** `fcitx5-configtool` → Addons → Clipboard → Trigger Key → Empty/None
+
+---
+
 ## Summary
 
 | App | Problem | Fix |
@@ -98,3 +120,5 @@ Autostart in hyprland.conf: `exec-once = /usr/lib/hyprpolkitagent/hyprpolkitagen
 | All icons missing | kded6 stole SNI watcher | `~/.config/kded6rc` disables module permanently |
 | Icons gone after waybar restart | Apps don't re-register SNI automatically | Restart each tray app after waybar restarts |
 | pkexec fails silently (exit 127) | hyprpolkitagent not running | `systemctl --user enable --now hyprpolkitagent` |
+| Ícone (?) no tray | nm-applet não renderiza no Wayland | `paru -Rns network-manager-applet` |
+| Popup abre com Super+; | fcitx5 Clipboard trigger key | fcitx5-configtool → Addons → Clipboard → Empty |
