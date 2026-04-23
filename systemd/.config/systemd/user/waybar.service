@@ -1,0 +1,16 @@
+[Unit]
+Description=Waybar
+After=graphical-session.target
+Wants=graphical-session.target
+
+[Service]
+ExecStartPre=-/usr/bin/pkill kded6
+ExecStartPre=/bin/sleep 0.5
+ExecStart=/usr/bin/waybar
+StandardOutput=append:%h/.config/waybar/waybar.log
+StandardError=append:%h/.config/waybar/waybar.log
+Restart=on-failure
+RestartSec=2
+
+[Install]
+WantedBy=graphical-session.target
