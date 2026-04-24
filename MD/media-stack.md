@@ -42,7 +42,7 @@ All services (except Flaresolverr, Redis, and torrent-indexer) are exposed via *
 
 ## Jellyfin Hardware Transcoding
 
-Jellyfin uses NVIDIA NVENC (RTX 4080) for hardware-accelerated transcoding:
+Jellyfin uses NVIDIA NVENC (RTX 4080) for hardware-accelerated transcoding. The GPU is visible inside the container and confirmed working (`nvidia-smi` returns driver `595.58.03`).
 
 ```yaml
 environment:
@@ -57,7 +57,19 @@ deploy:
           capabilities: [gpu]
 ```
 
-Requires the `nvidia-container-toolkit` package and the Docker daemon configured to use the NVIDIA runtime.
+Requires `nvidia-container-toolkit` installed on the host. To enable in Jellyfin:
+**Admin Dashboard → Playback → Transcoding → Hardware acceleration: NVENC**
+
+RTX 4080 supports simultaneous H.264, H.265/HEVC, and AV1 NVENC streams — direct play is always preferred when the client supports the codec.
+
+## Jellyfin Network Config (Cloudflare Tunnel)
+
+`/mnt/main/Media-Stack/config/jellyfin/config/network.xml` is configured with:
+
+- `KnownProxies`: `172.19.0.9` (cloudflared container) + `172.19.0.0/16` subnet — so Jellyfin reads the real client IP instead of the proxy IP
+- `EnablePublishedServerUriByRequest: true` — Jellyfin generates URLs using the request host (`media.lucasgiraldelli.dev`) instead of internal addresses
+
+Without this, Jellyfin may generate internal URLs (e.g. `jellyfin.local`) that external clients can't resolve.
 
 ## Data Flow
 
