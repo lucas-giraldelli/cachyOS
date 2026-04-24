@@ -2,14 +2,14 @@
 
 ## Crash: hyprgraphics library mismatch (v0.54.3)
 
-**Sintoma:** Hyprland crasha com SIGABRT/SIGSEGV ao desligar/desconectar o monitor DP-2.
+**Symptom:** Hyprland crashes with SIGABRT/SIGSEGV when turning off or disconnecting monitor DP-2.
 
-**Causa:** `libhyprgraphics` foi atualizada no sistema (0.5.1) mas o pacote `hyprland` foi compilado contra a versão antiga (0.5.0). O mismatch causa `std::bad_any_cast` durante `CWLSurfaceResource::commitState` no hotplug event do DRM.
+**Cause:** `libhyprgraphics` was updated on the system (0.5.1) but the `hyprland` package was compiled against the old version (0.5.0). The mismatch causes `std::bad_any_cast` during `CWLSurfaceResource::commitState` on a DRM hotplug event.
 
-**Confirmar no crash report:**
+**Confirm in crash report:**
 ```bash
 cat ~/.cache/hyprland/hyprlandCrashReport*.txt | grep "Hyprgraphics"
-# Hyprgraphics: built against 0.5.0, system has 0.5.1  ← problema
+# Hyprgraphics: built against 0.5.0, system has 0.5.1  ← problem
 ```
 
 **Stack trace:**
@@ -18,50 +18,50 @@ CExtImageCopyCaptureFrameV1 → CWLSurfaceResource::commitState
 → CSurfaceStateQueue::tryProcess → signal emit → bad_any_cast → ABORT
 ```
 
-**Gatilho:** desligar o monitor pelo botão físico → DP-2 manda hotplug event → crash.
+**Trigger:** turning off the monitor with the physical button → DP-2 sends a hotplug event → crash.
 
-**Efeitos colaterais:** NTFS volumes em `/mnt` ficam dirty e não montam no próximo boot (ver `ntfs-mounts.md`).
+**Side effect:** NTFS volumes in `/mnt` are left dirty and won't mount on the next boot (see `ntfs-mounts.md`).
 
 ---
 
-## Mitigações implementadas
+## Mitigations in place
 
-### 1. Monitor headless fallback (`hyprland.conf`)
+### 1. Headless monitor fallback (`hyprland.conf`)
 
-Quando DP-2 desconecta, o Hyprland sobrevive movendo janelas para o monitor virtual em vez de crashar:
+When DP-2 disconnects, Hyprland survives by moving windows to a virtual monitor instead of crashing:
 
 ```ini
 monitor=DP-2,2560x1440@360,0x0,1
-monitor=,preferred,auto,1  # headless fallback
+monitor=,preferred,auto,1  # headless fallback — keeps Hyprland alive if DP-2 glitches/disconnects
 ```
 
-### 2. DPMS em vez de botão físico
+### 2. DPMS instead of the physical button
 
-Desligar o monitor via software não gera hotplug event — evita o crash:
+Turning off the monitor via software does not generate a hotplug event — avoids the crash:
 
 ```bash
 hyprctl dispatch dpms toggle DP-2
 ```
 
-**Keybind:** `Super+F10` — toggle DPMS do DP-2.
+**Keybind:** `Super+F10` — toggles DPMS on DP-2.
 
-**Regra:** enquanto o bug do hyprgraphics existir, **não usar o botão físico do monitor** para desligar. Usar Super+F10.
+**Rule:** while the hyprgraphics bug exists, **do not use the monitor's physical power button**. Use Super+F10 instead.
 
-### 3. Fix automático dos NTFS no boot
+### 3. Automatic NTFS fix on boot
 
-`fix-ntfs.service` roda `ntfsfix` antes de montar `/mnt/main` e `/mnt/secondary`. Transparente — não requer ação manual.
+`fix-ntfs.service` runs `ntfsfix` before mounting `/mnt/main` and `/mnt/secondary`. Transparent — no manual action needed.
 
 ---
 
-## Fix definitivo (aguardando CachyOS)
+## Permanent fix (waiting on CachyOS)
 
-O CachyOS precisa rebuildar o pacote `hyprland` contra `hyprgraphics 0.5.1`. Verificar se saiu update:
+CachyOS needs to rebuild the `hyprland` package against `hyprgraphics 0.5.1`. Check for the update:
 
 ```bash
 paru -Qu hyprland
 ```
 
-Quando aparecer versão nova (ex: `0.54.3-3.1` ou `0.55`), fazer:
+When a new version appears (e.g. `0.54.3-3.1` or `0.55`), run:
 
 ```bash
 paru -Syu
@@ -69,18 +69,18 @@ paru -Syu
 
 ---
 
-## Diagnóstico geral de crashes
+## General crash diagnosis
 
 ```bash
-# Ver crash reports e causa
+# Check crash report for library mismatch
 cat ~/.cache/hyprland/hyprlandCrashReport*.txt | grep -E "Hyprgraphics|signal|built against"
 
-# Ver log do boot anterior
+# Check previous boot errors
 journalctl -b -1 -p err --no-pager | grep -E "Hyprland|hyprgraphics|SIGSEGV|ABORT"
 
-# Ver coredumps recentes
+# List recent coredumps
 coredumpctl list | tail -5
 
-# Histórico de crashes
+# Crash/reboot history
 last reboot | head -10
 ```

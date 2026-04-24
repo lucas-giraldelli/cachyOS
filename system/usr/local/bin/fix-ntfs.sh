@@ -11,5 +11,5 @@ for dev in "${DEVICES[@]}"; do
     if ! blkid "$dev" | grep -q ntfs; then
         continue
     fi
-    ntfsfix "$dev"
+    ntfsfix -d "$dev"
 done

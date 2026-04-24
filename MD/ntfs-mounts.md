@@ -1,51 +1,51 @@
-# NTFS Mounts — HDs externos
+# NTFS Mounts — External Drives
 
-## Configuração atual (fstab)
+## Current setup (fstab)
 
-| Dispositivo | Ponto de montagem | Label |
-|-------------|-------------------|-------|
+| Device | Mount point | Label |
+|--------|-------------|-------|
 | `/dev/sdb2` | `/mnt/main` | Main HDD (1.8TB) |
 | `/dev/sda1` | `/mnt/secondary` | Secondary SSD (480GB) |
 
-`/etc/fstab` usa `ntfs3` (driver do kernel) com `nofail` — falhas silenciosas na inicialização.
+`/etc/fstab` uses `ntfs3` (kernel driver) with `nofail` — silent failures on boot.
 
 ---
 
-## Problema: HDs não montam após crash
+## Problem: drives don't mount after a crash
 
-Após shutdown/crash não-limpo (ex: Hyprland SIGABRT), o NTFS fica marcado como "dirty". O driver `ntfs3` recusa montar volumes sujos sem a flag `force`.
+After an unclean shutdown or crash (e.g. Hyprland SIGABRT), NTFS volumes are marked as dirty. The `ntfs3` driver refuses to mount dirty volumes without the `force` flag.
 
-**Sintoma no journal:**
+**Journal symptom:**
 ```
 ntfs3(sdb2): volume is dirty and "force" flag is not set!
 Failed to mount /mnt/main
 ```
 
-**Fix manual (one-liner):**
+**Manual fix (one-liner):**
 ```bash
 sudo ntfsfix /dev/sdb2 && sudo ntfsfix /dev/sda1 && sudo mount -a
 ```
 
-> `ntfsfix` não formata — apenas limpa a flag dirty e ressincroniza o MFT mirror.
+> `ntfsfix` does not format — it only clears the dirty flag and resyncs the MFT mirror.
 
 ---
 
-## Fix automático — systemd service
+## Automatic fix — systemd service
 
-Serviço `fix-ntfs.service` que roda `ntfsfix` em ambos os volumes **antes** de montá-los no boot. Arquivos no dotfiles em `system/`.
+`fix-ntfs.service` runs `ntfsfix` on both volumes **before** mounting them at boot. Files tracked in dotfiles under `system/`.
 
-**Instalar (one-liner):**
+**Install (one-liner):**
 ```bash
 sudo cp ~/projects/cachyOS/system/usr/local/bin/fix-ntfs.sh /usr/local/bin/fix-ntfs.sh && sudo chmod +x /usr/local/bin/fix-ntfs.sh && sudo cp ~/projects/cachyOS/system/etc/systemd/system/fix-ntfs.service /etc/systemd/system/fix-ntfs.service && sudo systemctl daemon-reload && sudo systemctl enable fix-ntfs.service
 ```
 
-**Verificar status:**
+**Check status:**
 ```bash
 systemctl status fix-ntfs.service
 ```
 
 ---
 
-## Nota sobre ntfs3 vs ntfs-3g
+## Note on ntfs3 vs ntfs-3g
 
-O `ntfs3` (kernel) é mais restrito com volumes dirty que o `ntfs-3g` (userspace). O serviço `fix-ntfs` contorna isso automaticamente — não é necessário trocar o driver.
+`ntfs3` (kernel) is stricter about dirty volumes than `ntfs-3g` (userspace). The `fix-ntfs` service works around this automatically — no need to switch drivers.

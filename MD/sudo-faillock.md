@@ -1,16 +1,16 @@
-# sudo — faillock bloqueando usuário
+# sudo — faillock locking the user out
 
-## Sintoma
+## Symptom
 
-`sudo` pede senha mas rejeita com "Sorry, try again" mesmo com a senha correta. `su -` funciona normalmente (usa senha do root).
+`sudo` asks for password but rejects it with "Sorry, try again" even when the password is correct. `su -` works fine (uses root's password, not the user's).
 
-## Causa
+## Cause
 
-O `faillock` (PAM) bloqueia o usuário após X tentativas falhas consecutivas de autenticação. Pode ser:
+`faillock` (PAM) locks the user after X consecutive failed authentication attempts. Can be triggered by:
 
-- **Você mesmo** digitando a senha errada várias vezes (caps lock, layout de teclado)
-- **Dolphin/polkit** tentando montar dispositivos e falhando na autenticação
-- Scripts/serviços que tentam `sudo` repetidamente sem sucesso
+- **Typing the wrong password** multiple times (caps lock, keyboard layout)
+- **Dolphin/polkit** failing to authenticate when trying to mount devices
+- Scripts or services attempting `sudo` repeatedly without success
 
 ## Fix
 
@@ -18,22 +18,22 @@ O `faillock` (PAM) bloqueia o usuário após X tentativas falhas consecutivas de
 faillock --user $USER --reset
 ```
 
-## Diagnóstico
+## Diagnosis
 
 ```bash
-# Ver tentativas falhas e status do lock
+# Show failed attempts and lock status
 faillock --user lukesh
 
-# Ver qual processo causou as falhas
+# Find what process caused the failures
 journalctl -b | grep -E "sudo|pam|faillock|authentication failure" | tail -30
 ```
 
-## Prevenção
+## Prevention
 
-Serviços systemd que rodam comandos opcionais devem usar o prefixo `-` para ignorar falhas sem contar como erro de autenticação:
+Systemd services running optional commands should use the `-` prefix to ignore failures without counting as auth errors:
 
 ```ini
-ExecStartPre=-/usr/bin/pkill kded6   # o "-" ignora falha
+ExecStartPre=-/usr/bin/pkill kded6   # "-" ignores failure
 ```
 
-Scripts que usam `sudo` devem ter `|| true` em comandos opcionais para não causar loop de retry.
+Scripts using `sudo` for optional commands should use `|| true` to avoid retry loops.
