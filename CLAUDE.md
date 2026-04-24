@@ -104,3 +104,8 @@ _Add your build and test commands here_
 - Always verify tools work on **Wayland** before suggesting them
 - Always check with `paru -Q` before suggesting installs
 - Config files for Hyprland: `~/.config/hypr/`
+
+## Language
+
+- **All files in this repo must be written in English** — docs, comments, commit messages, scripts
+- Conversation with the user can be in Portuguese (pt-BR), but nothing goes into the repo in Portuguese
