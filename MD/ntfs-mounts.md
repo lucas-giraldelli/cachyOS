@@ -13,26 +13,39 @@
 
 ## Problema: HDs não montam após crash
 
-Após shutdown/crash não-limpo, o NTFS fica marcado como "dirty" (MFT corrompido). O driver `ntfs3` recusa montar volumes sujos.
+Após shutdown/crash não-limpo (ex: Hyprland SIGABRT), o NTFS fica marcado como "dirty". O driver `ntfs3` recusa montar volumes sujos sem a flag `force`.
 
-**Sintoma:**
+**Sintoma no journal:**
 ```
-$MFTMirr does not match $MFT (record 3).
-Failed to mount '/dev/sdbX': Input/output error
+ntfs3(sdb2): volume is dirty and "force" flag is not set!
+Failed to mount /mnt/main
 ```
 
-**Fix:**
+**Fix manual (one-liner):**
 ```bash
-sudo ntfsfix /dev/sdb2
-sudo ntfsfix /dev/sda1
-sudo mount -t ntfs-3g /dev/sdb2 /mnt/main
-sudo mount -t ntfs-3g /dev/sda1 /mnt/secondary
+sudo ntfsfix /dev/sdb2 && sudo ntfsfix /dev/sda1 && sudo mount -a
 ```
 
 > `ntfsfix` não formata — apenas limpa a flag dirty e ressincroniza o MFT mirror.
 
 ---
 
+## Fix automático — systemd service
+
+Serviço `fix-ntfs.service` que roda `ntfsfix` em ambos os volumes **antes** de montá-los no boot. Arquivos no dotfiles em `system/`.
+
+**Instalar (one-liner):**
+```bash
+sudo cp ~/projects/cachyOS/system/usr/local/bin/fix-ntfs.sh /usr/local/bin/fix-ntfs.sh && sudo chmod +x /usr/local/bin/fix-ntfs.sh && sudo cp ~/projects/cachyOS/system/etc/systemd/system/fix-ntfs.service /etc/systemd/system/fix-ntfs.service && sudo systemctl daemon-reload && sudo systemctl enable fix-ntfs.service
+```
+
+**Verificar status:**
+```bash
+systemctl status fix-ntfs.service
+```
+
+---
+
 ## Nota sobre ntfs3 vs ntfs-3g
 
-O kernel 7.0 usa `ntfs3` por padrão no fstab, mas ele é mais restrito com volumes dirty. Se os HDs continuarem falhando na inicialização após crashes, considerar trocar no fstab para `ntfs-3g`.
+O `ntfs3` (kernel) é mais restrito com volumes dirty que o `ntfs-3g` (userspace). O serviço `fix-ntfs` contorna isso automaticamente — não é necessário trocar o driver.
