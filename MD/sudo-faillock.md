@@ -6,7 +6,11 @@
 
 ## Causa
 
-O `faillock` (PAM) bloqueia o usuário após X tentativas falhas consecutivas de autenticação. Acontece quando algum script/serviço tenta usar `sudo` repetidamente sem sucesso — ex: `tray-restart.sh`, serviços systemd com `ExecStartPre` que falham.
+O `faillock` (PAM) bloqueia o usuário após X tentativas falhas consecutivas de autenticação. Pode ser:
+
+- **Você mesmo** digitando a senha errada várias vezes (caps lock, layout de teclado)
+- **Dolphin/polkit** tentando montar dispositivos e falhando na autenticação
+- Scripts/serviços que tentam `sudo` repetidamente sem sucesso
 
 ## Fix
 
