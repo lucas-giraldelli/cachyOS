@@ -95,6 +95,14 @@ bd close <id>         # Complete work
 - Before suggesting a package install, check if it's already installed: `paru -Q <pkg>`
 - Before suggesting a tool, check if it works on Wayland/Hyprland
 
+### Banned Packages (KDE stack)
+**NEVER install these** — they pull in `kded6`, which hijacks the `org.kde.StatusNotifierWatcher` D-Bus name and silently kills the waybar systray:
+- `dolphin` — use `thunar` instead
+- `plasma-workspace`, `plasma-integration`, `xdg-desktop-portal-kde`, `kded`
+- Any KDE/Plasma app that depends on `plasma-workspace`
+
+These are also blocked in `/etc/pacman.conf` via `IgnorePkg`.
+
 ## Build & Test
 
 _Add your build and test commands here_
