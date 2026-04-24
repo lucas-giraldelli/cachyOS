@@ -1,0 +1,13 @@
+[Unit]
+Description=Fix dirty NTFS volumes before mounting
+DefaultDependencies=no
+After=systemd-udevd.service
+Before=mnt-main.mount mnt-secondary.mount local-fs.target
+
+[Service]
+Type=oneshot
+ExecStart=/usr/local/bin/fix-ntfs.sh
+RemainAfterExit=yes
+
+[Install]
+WantedBy=local-fs.target
