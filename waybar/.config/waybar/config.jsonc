@@ -5,7 +5,7 @@
 
     "modules-left": ["hyprland/workspaces", "hyprland/submap"],
     "modules-center": ["custom/ytmusic"],
-    "modules-right": ["custom/capslock", "tray", "custom/docker", "cpu", "memory", "custom/gpu", "custom/power", "pulseaudio", "custom/network", "custom/date", "clock"],
+    "modules-right": ["custom/capslock", "tray", "custom/bt-battery", "custom/docker", "group/perf", "custom/power", "pulseaudio", "custom/network", "custom/date", "clock"],
 
     "hyprland/workspaces": {
         "disable-scroll": false,
@@ -26,6 +26,11 @@
         "on-click": "kitty --title lazydocker sh -c 'cd /mnt/main/dns && lazydocker'"
     },
 
+    "group/perf": {
+        "orientation": "horizontal",
+        "modules": ["cpu", "memory", "custom/gpu"]
+    },
+
     "cpu": {
         "format": "󰍛  {usage}%",
         "tooltip-format": "CPU: {usage}%\nLoad: {load}",
@@ -42,6 +47,12 @@
         "exec": "~/.config/waybar/scripts/gpu-usage.sh",
         "return-type": "json",
         "interval": 2
+    },
+
+    "custom/bt-battery": {
+        "exec": "~/.config/waybar/scripts/bt-battery.sh",
+        "return-type": "json",
+        "interval": 60
     },
 
     "custom/power": {
