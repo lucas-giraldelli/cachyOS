@@ -10,3 +10,4 @@ waybar/.config/waybar/scripts/*.log
 **/__pycache__/
 .claude/settings.local.json
 waybar.log
+.env
