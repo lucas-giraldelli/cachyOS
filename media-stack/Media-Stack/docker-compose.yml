@@ -1,0 +1,209 @@
+version: "3.8"
+
+services:
+  # Jellyfin with Nvidia NVENC support (RTX 4080)
+  jellyfin:
+    image: jellyfin/jellyfin:latest
+    container_name: jellyfin
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=America/Cuiaba
+      - NVIDIA_VISIBLE_DEVICES=all
+      - NVIDIA_DRIVER_CAPABILITIES=compute,video,utility
+    volumes:
+      - /home/lukesh/media-stack-config/jellyfin:/config
+      - /mnt/main/Media-Stack/data/media:/data/media
+    ports:
+      - 8096:8096
+    init: true
+    restart: unless-stopped
+    networks:
+      - shared
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.jellyfin.rule=Host(`jellyfin.local`)"
+      - "traefik.http.services.jellyfin.loadbalancer.server.port=8096"
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: 1
+              capabilities: [gpu]
+
+  # Movies: Radarr
+  radarr:
+    image: lscr.io/linuxserver/radarr:latest
+    container_name: radarr
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=America/Cuiaba
+    volumes:
+      - /home/lukesh/media-stack-config/radarr:/config
+      - /mnt/main/Media-Stack/data/media:/data/media
+      - /mnt/main/Media-Stack/data/manual:/data/manual
+    ports:
+      - 7878:7878
+    restart: unless-stopped
+    networks:
+      - shared
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.radarr.rule=Host(`radarr.local`)"
+      - "traefik.http.services.radarr.loadbalancer.server.port=7878"
+
+  # TV Shows: Sonarr
+  sonarr:
+    image: lscr.io/linuxserver/sonarr:latest
+    container_name: sonarr
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=America/Cuiaba
+    volumes:
+      - /home/lukesh/media-stack-config/sonarr:/config
+      - /mnt/main/Media-Stack/data/media:/data/media
+      - /mnt/main/Media-Stack/data/manual:/data/manual
+    ports:
+      - 8989:8989
+    restart: unless-stopped
+    networks:
+      - shared
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.sonarr.rule=Host(`sonarr.local`)"
+      - "traefik.http.services.sonarr.loadbalancer.server.port=8989"
+
+  # Indexer (Trackers): Prowlarr
+  prowlarr:
+    image: lscr.io/linuxserver/prowlarr:latest
+    container_name: prowlarr
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=America/Cuiaba
+    volumes:
+      - /home/lukesh/media-stack-config/prowlarr:/config
+    ports:
+      - 9696:9696
+    restart: unless-stopped
+    networks:
+      - shared
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.prowlarr.rule=Host(`prowlarr.local`)"
+      - "traefik.http.services.prowlarr.loadbalancer.server.port=9696"
+
+  # Subtitles: Bazarr
+  bazarr:
+    image: lscr.io/linuxserver/bazarr:latest
+    container_name: bazarr
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=America/Cuiaba
+    volumes:
+      - /home/lukesh/media-stack-config/bazarr:/config
+      - /mnt/main/Media-Stack/data/media:/data/media
+    ports:
+      - 6767:6767
+    restart: unless-stopped
+    networks:
+      - shared
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.bazarr.rule=Host(`bazarr.local`)"
+      - "traefik.http.services.bazarr.loadbalancer.server.port=6767"
+
+  # Requests & Discovery: Jellyseerr
+  jellyseerr:
+    image: fallenbagel/jellyseerr:latest
+    container_name: jellyseerr
+    environment:
+      - LOG_LEVEL=debug
+      - TZ=America/Cuiaba
+    volumes:
+      - /home/lukesh/media-stack-config/jellyseerr:/app/config
+    ports:
+      - 5055:5055
+    restart: unless-stopped
+    networks:
+      - shared
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.jellyseerr.rule=Host(`jellyseerr.local`)"
+      - "traefik.http.services.jellyseerr.loadbalancer.server.port=5055"
+
+  # Download Client: qBittorrent
+  qbittorrent:
+    image: lscr.io/linuxserver/qbittorrent:latest
+    container_name: qbittorrent
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=America/Cuiaba
+      - WEBUI_PORT=8081
+    volumes:
+      - /home/lukesh/media-stack-config/qbittorrent:/config
+      - /mnt/main/Media-Stack/data/media:/data/media
+    ports:
+      - 8081:8081
+      - 6881:6881
+      - 6881:6881/udp
+    restart: unless-stopped
+    networks:
+      - shared
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.qbittorrent.rule=Host(`qbit.local`)"
+      - "traefik.http.services.qbittorrent.loadbalancer.server.port=8081"
+
+  # Cloudflare Bypass: Flaresolverr
+  flaresolverr:
+    image: flaresolverr/flaresolverr:latest
+    container_name: flaresolverr
+    environment:
+      - LOG_LEVEL=info
+      - TZ=America/Cuiaba
+    ports:
+      - 8191:8191
+    restart: unless-stopped
+
+  # In-Memory Database (for the Indexer)
+  redis:
+    image: redis:alpine
+    container_name: redis
+    restart: unless-stopped
+
+  # Custom Torrent Indexer
+  torrent-indexer:
+    image: felipemarinho97/torrent-indexer:latest
+    container_name: torrent-indexer
+    environment:
+      - LOG_LEVEL=1
+      - REDIS_HOST=redis
+      - FLARESOLVERR_ADDRESS=http://flaresolverr:8191
+      - TZ=America/Cuiaba
+    ports:
+      - 7006:7006
+    restart: unless-stopped
+    depends_on:
+      - redis
+      - flaresolverr
+
+  # Remote Access: Cloudflare Tunnel
+  cloudflared:
+    image: cloudflare/cloudflared:latest
+    container_name: cloudflared
+    restart: unless-stopped
+    command: tunnel --no-autoupdate run --token ${TUNNEL_TOKEN}
+    environment:
+      - TUNNEL_TOKEN=${TUNNEL_TOKEN}
+    networks:
+      - shared
+
+networks:
+  shared:
+    external: true
