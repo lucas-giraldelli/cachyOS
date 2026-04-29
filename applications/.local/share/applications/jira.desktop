@@ -1,0 +1,8 @@
+[Desktop Entry]
+Name=Jira
+Comment=Track5 Media Jira Board
+Exec=chromium --user-data-dir=/home/lukesh/.config/chromium-jira --load-extension=/home/lukesh/.config/chromium-ext "--app=https://track5media.atlassian.net/jira/software/c/projects/DEV/boards/1157?assignee=712020%3Aea6579d1-93ad-4836-89d5-d228606b5521&quickFilter=1374"
+Icon=jira
+Type=Application
+Categories=Development;
+StartupWMClass=webapp-jira
