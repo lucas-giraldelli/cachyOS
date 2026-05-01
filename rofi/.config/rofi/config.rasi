@@ -1,5 +1,5 @@
 configuration {
-    modi: "drun,run";
+    modi: "drun,run,calc";
     show-icons: true;
     icon-theme: "Papirus-Dark";
     font: "MesloLGS Nerd Font 13";
