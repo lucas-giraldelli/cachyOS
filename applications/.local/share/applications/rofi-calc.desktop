@@ -1,0 +1,8 @@
+[Desktop Entry]
+Name=Calculator
+Comment=rofi-calc
+Exec=rofi-calc-open
+Icon=accessories-calculator
+Type=Application
+Categories=Utility;Calculator;
+Keywords=calc;calculator;math;
