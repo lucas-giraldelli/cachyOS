@@ -5,7 +5,7 @@
 
     "modules-left": ["hyprland/workspaces", "custom/capslock", "hyprland/submap"],
     "modules-center": ["custom/ytmusic"],
-    "modules-right": ["tray", "custom/bt-battery", "custom/docker", "group/perf", "custom/power", "pulseaudio", "custom/network", "custom/date", "clock"],
+    "modules-right": ["tray", "custom/bt-battery", "custom/docker", "group/perf", "custom/power", "pulseaudio", "custom/network", "clock"],
 
     "hyprland/workspaces": {
         "disable-scroll": false,
@@ -28,13 +28,7 @@
 
     "group/perf": {
         "orientation": "horizontal",
-        "modules": ["cpu", "memory", "custom/gpu"]
-    },
-
-    "cpu": {
-        "format": "󰍛  {usage}%",
-        "tooltip-format": "CPU: {usage}%\nLoad: {load}",
-        "interval": 2
+        "modules": ["memory"]
     },
 
     "memory": {
@@ -42,12 +36,6 @@
         "tooltip-format": "Disponível: {avail:0.1f}GB\nUsado: {used:0.1f}GB / {total:0.1f}GB",
         "interval": 2,
         "on-click": "kitty --class=btop-float -e btop"
-    },
-
-    "custom/gpu": {
-        "exec": "~/.config/waybar/scripts/gpu-usage.sh",
-        "return-type": "json",
-        "interval": 2
     },
 
     "custom/bt-battery": {
@@ -105,16 +93,9 @@
         "interval": 10
     },
 
-    "custom/date": {
-        "exec": "python3 ~/.config/waybar/scripts/calendar.py",
-        "return-type": "json",
-        "interval": 300,
-        "format": "󰸗  {}",
-        "on-click": "bash ~/.config/waybar/scripts/calendar-popup.sh"
-    },
-
     "clock": {
-        "format": "󰅐  {:%H:%M}",
-        "tooltip-format": "<big>{:%Y %B}</big>\n<tt><small>{calendar}</small></tt>"
+        "format": "󰅐  {:%a %d %b   %H:%M}",
+        "tooltip-format": "<big>{:%Y %B}</big>\n<tt><small>{calendar}</small></tt>",
+        "on-click": "bash ~/.config/waybar/scripts/calendar-popup.sh"
     }
 }
