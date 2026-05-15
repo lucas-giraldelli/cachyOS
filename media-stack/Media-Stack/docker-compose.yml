@@ -24,6 +24,10 @@ services:
       - "traefik.enable=true"
       - "traefik.http.routers.jellyfin.rule=Host(`jellyfin.local`)"
       - "traefik.http.services.jellyfin.loadbalancer.server.port=8096"
+    runtime: nvidia
+    devices:
+      - /dev/nvidia-caps/nvidia-cap1:/dev/nvidia-caps/nvidia-cap1
+      - /dev/nvidia-caps/nvidia-cap2:/dev/nvidia-caps/nvidia-cap2
     deploy:
       resources:
         reservations:
