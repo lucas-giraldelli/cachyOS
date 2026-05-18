@@ -63,6 +63,19 @@ Nvidia's Linux drivers do not implement GPU scheduling the same way as Windows. 
 - **proton-cachyos-slr**: recommended for games with EAC/BattlEye anti-cheat
 - Avoid mixing `proton-cachyos` (non-SLR) with Steam Linux Runtime dependent games
 
+### OptiScaler (Proton-CachyOS 11+)
+
+Proton-CachyOS 11 natively integrates **OptiScaler**, which dynamically translates in-game upscalers (DLSS, XeSS, older FSR variants) into alternative backends — including FSR4. No manual DLL injection needed.
+
+**Enable via Steam launch options:**
+```
+PROTON_OPTISCALER=1 %command%
+```
+
+Works the same in Heroic Games Launcher (paste into the Launch Options field in game properties).
+
+**What it does**: intercepts native upscaler calls inside the game and reroutes them through whichever backend OptiScaler is configured for. Lets you use FSR4 even in games that only expose DLSS or XeSS natively.
+
 ---
 
 ## Hotkeys & Input Conflicts in Games
