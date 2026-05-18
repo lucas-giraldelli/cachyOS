@@ -43,6 +43,7 @@ window#waybar {
 #perf,
 #custom-power,
 #custom-bt-battery,
+#custom-brightness,
 #pulseaudio,
 #custom-network,
 #custom-date,
@@ -125,6 +126,10 @@ window#waybar {
 
 #custom-power {
   color: #f9e2af;
+}
+
+#custom-brightness {
+  color: #7dcfff;
 }
 
 #custom-ytmusic {
