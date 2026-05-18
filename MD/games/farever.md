@@ -34,6 +34,15 @@ PROTON_ENABLE_NVAPI=1 DXVK_ENABLE_NVAPI=1 PROTON_VKD3D_HEAP=1 MANGOHUD=1 MANGOHU
 - **Shader warmup**: primeira sessão tem 0.1% low severo (~11 FPS). A partir da segunda sessão o cache está quente e os spikes somem.
 - **game-performance**: deve vir como wrapper antes do `%command%`. `MANGOHUD=1` deve ser variável de ambiente antes do wrapper — se vier depois, `powerprofilesctl` tenta executar `MANGOHUD=1` como programa e crasha.
 
+## Logs
+
+| Log | Caminho |
+|-----|---------|
+| Steam (crashes, launch) | `~/.steam/steam/logs/console-linux.txt` |
+| Proton (ativar com `PROTON_LOG=1`) | `~/steam-3672400.log` |
+| Jogo (Unreal Saved/Logs) | `~/.local/share/Steam/steamapps/compatdata/3672400/pfx/drive_c/users/steamuser/AppData/Local/Farever/Saved/Logs/` *(criado após primeiro launch bem-sucedido)* |
+| MangoHud benchmarks | `~/benchmarks/` |
+
 ## Hyprland windowrule
 
 ```
