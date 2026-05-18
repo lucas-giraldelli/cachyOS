@@ -5,7 +5,7 @@
 
     "modules-left": ["hyprland/workspaces", "custom/capslock", "hyprland/submap"],
     "modules-center": ["custom/ytmusic"],
-    "modules-right": ["tray", "custom/bt-battery", "custom/docker", "group/perf", "custom/power", "pulseaudio", "custom/network", "clock"],
+    "modules-right": ["tray", "custom/bt-battery", "custom/docker", "group/perf", "custom/brightness", "pulseaudio", "custom/network", "clock"],
 
     "hyprland/workspaces": {
         "disable-scroll": false,
@@ -75,6 +75,13 @@
         "on-click": "playerctl -p $(playerctl -l 2>/dev/null | grep chromium | head -1) play-pause",
         "on-click-right": "playerctl -p $(playerctl -l 2>/dev/null | grep chromium | head -1) next",
         "max-length": 60
+    },
+
+    "custom/brightness": {
+        "exec": "~/.config/waybar/scripts/brightness.sh",
+        "return-type": "json",
+        "interval": 60,
+        "signal": 8
     },
 
     "pulseaudio": {
