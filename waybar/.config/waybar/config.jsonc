@@ -5,7 +5,7 @@
 
     "modules-left": ["hyprland/workspaces", "custom/capslock", "hyprland/submap"],
     "modules-center": ["custom/ytmusic"],
-    "modules-right": ["tray", "custom/bt-battery", "custom/docker", "group/perf", "custom/brightness", "pulseaudio", "custom/network", "clock"],
+    "modules-right": ["tray", "custom/bt-battery", "custom/docker", "group/perf", "custom/brightness", "pulseaudio", "custom/weather", "custom/network", "clock"],
 
     "hyprland/workspaces": {
         "disable-scroll": false,
@@ -92,6 +92,12 @@
         "format-icons": {
             "default": ["󰕿", "󰖀", "󰕾"]
         }
+    },
+
+    "custom/weather": {
+        "exec": "~/.config/waybar/scripts/weather.sh",
+        "return-type": "json",
+        "interval": 600
     },
 
     "custom/network": {
