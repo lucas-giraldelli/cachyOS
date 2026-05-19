@@ -45,6 +45,7 @@ window#waybar {
 #custom-bt-battery,
 #custom-brightness,
 #pulseaudio,
+#custom-weather,
 #custom-network,
 #custom-date,
 #clock {
@@ -154,6 +155,19 @@ window#waybar {
 #pulseaudio {
   color: #e0af68;
 }
+
+#custom-weather {
+  min-width: 80px;
+  color: #89dceb;
+}
+
+#custom-weather.rain   { color: #74c7ec; }
+#custom-weather.storm  { color: #cba6f7; }
+#custom-weather.snow   { color: #cdd6f4; }
+#custom-weather.fog    { color: #a6adc8; }
+#custom-weather.cloudy { color: #bac2de; }
+#custom-weather.clear  { color: #f9e2af; }
+#custom-weather.error  { color: #f7768e; }
 
 #custom-network {
   color: #00ff99;
