@@ -163,7 +163,7 @@ window#waybar {
 }
 
 #custom-weather {
-  min-width: 80px;
+  padding: 4px 8px;
   color: #89dceb;
 }
 
