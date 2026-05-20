@@ -167,6 +167,11 @@ window#waybar {
   color: #89dceb;
 }
 
+#custom-weather:hover {
+  background-color: #1a1b26;
+  box-shadow: none;
+}
+
 #custom-weather.rain   { color: #74c7ec; }
 #custom-weather.storm  { color: #cba6f7; }
 #custom-weather.snow   { color: #cdd6f4; }
