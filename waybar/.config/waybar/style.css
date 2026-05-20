@@ -75,6 +75,12 @@ window#waybar {
   padding: 4px 8px;
 }
 
+#tray > widget:hover,
+#tray button:hover {
+  background-color: transparent;
+  box-shadow: none;
+}
+
 #custom-docker {
   padding: 4px 10px;
 }
