@@ -9,4 +9,5 @@ fi
 val=$(cat "$TMPFILE" 2>/dev/null)
 cur=${val%%/*}
 max=${val##*/}
-echo "{\"text\": \"󰃟  ${cur} / ${max}\", \"tooltip\": \"Brilho: ${cur} / ${max}\"}"
+pct=$(( cur * 100 / max ))
+echo "{\"text\": \"󰃟  ${pct}%\", \"tooltip\": \"Brilho: ${pct}% (passo: 5%)\"}"
