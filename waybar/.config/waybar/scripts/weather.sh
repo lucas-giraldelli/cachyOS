@@ -48,7 +48,7 @@ def fetch(url):
         return None
 
 def err():
-    print(json.dumps({"text":"󰖑  --°C","class":"error","tooltip":"Clima indisponível"}))
+    print(json.dumps({"text":"󰖑","class":"error","tooltip":"Clima indisponível"}))
     sys.exit(0)
 
 def get_loc():
@@ -107,7 +107,7 @@ if cls == "clear" and temp < 10:
     icon += "󰹶"
 
 tip = f"{desc}\n{temp}°C (sensação {feel}°C)  |  Umidade: {hum}%  |  Vento: {wind:.0f} km/h"
-out = json.dumps({"text": f"{icon}  {temp}°C", "class": cls, "tooltip": tip})
+out = json.dumps({"text": icon, "class": cls, "tooltip": tip})
 
 os.makedirs(CACHE, exist_ok=True)
 json.dump({"ts": time.time(), "out": out}, open(WX_F, "w"))
