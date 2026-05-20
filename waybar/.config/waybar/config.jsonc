@@ -97,7 +97,8 @@
     "custom/weather": {
         "exec": "~/.config/waybar/scripts/weather.sh",
         "return-type": "json",
-        "interval": 600
+        "interval": 600,
+        "on-click": "bash ~/.config/waybar/scripts/weather-popup.sh"
     },
 
     "custom/network": {

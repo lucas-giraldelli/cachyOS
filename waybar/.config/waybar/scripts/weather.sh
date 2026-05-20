@@ -1,68 +1,114 @@
-#!/bin/bash
+#!/usr/bin/env python3
+import json, os, sys, time
+from urllib.request import urlopen
 
-WEATHER=$(curl -sf --max-time 5 "wttr.in/?format=%C|%t|%h|%w" 2>/dev/null)
+CACHE = os.path.expanduser("~/.cache/waybar-weather")
+LOC_F = f"{CACHE}/location.json"
+WX_F  = f"{CACHE}/current.json"
 
-if [[ -z "$WEATHER" ]]; then
-    echo '{"text": "󰖑  --°C", "class": "error", "tooltip": "Weather unavailable"}'
-    exit 0
-fi
+ICONS_D = {
+    0:"󰖜",1:"󰖜",2:"󰖖",3:"󰖐",
+    45:"󰖑",48:"󰖑",
+    51:"󰖘",53:"󰖘",55:"󰖗",56:"󰖘",57:"󰖗",
+    61:"󰖘",63:"󰖘",65:"󰖗",66:"󰖘",67:"󰖗",
+    71:"󰖙",73:"󰖙",75:"󰖚",77:"󰖙",
+    80:"󰖘",81:"󰖘",82:"󰖗",85:"󰖙",86:"󰖚",
+    95:"󰖔",96:"󰖔",99:"󰖔",
+}
+ICONS_N = {**ICONS_D, 0:"󰖕",1:"󰖕",2:"󰖕"}
 
-CONDITION=$(echo "$WEATHER" | cut -d'|' -f1 | tr '[:upper:]' '[:lower:]' | xargs)
-TEMP_STR=$(echo "$WEATHER" | cut -d'|' -f2 | xargs)
-HUMIDITY=$(echo "$WEATHER" | cut -d'|' -f3 | xargs)
-WIND=$(echo "$WEATHER" | cut -d'|' -f4 | xargs)
-TEMP=$(echo "$TEMP_STR" | grep -oP '[+-]?\d+' | head -1)
+CSS = {
+    0:"clear",1:"clear",2:"cloudy",3:"cloudy",
+    45:"fog",48:"fog",
+    51:"rain",53:"rain",55:"rain",56:"rain",57:"rain",
+    61:"rain",63:"rain",65:"rain",66:"rain",67:"rain",
+    71:"snow",73:"snow",75:"snow",77:"snow",
+    80:"rain",81:"rain",82:"rain",85:"snow",86:"snow",
+    95:"storm",96:"storm",99:"storm",
+}
 
-HOUR=$(date +%H | sed 's/^0//')
-(( HOUR >= 6 && HOUR < 20 )) && IS_DAY=true || IS_DAY=false
+DESC = {
+    0:"Céu limpo",1:"Predominantemente limpo",2:"Parcialmente nublado",
+    3:"Nublado",45:"Neblina",48:"Neblina com gelo",
+    51:"Garoa leve",53:"Garoa moderada",55:"Garoa intensa",
+    56:"Garoa congelante leve",57:"Garoa congelante intensa",
+    61:"Chuva leve",63:"Chuva moderada",65:"Chuva forte",
+    66:"Chuva congelante leve",67:"Chuva congelante forte",
+    71:"Neve leve",73:"Neve moderada",75:"Neve forte",77:"Grânulos de neve",
+    80:"Pancadas leves",81:"Pancadas moderadas",82:"Pancadas fortes",
+    85:"Pancadas de neve leves",86:"Pancadas de neve fortes",
+    95:"Trovoada",96:"Trovoada c/ granizo",99:"Trovoada c/ granizo forte",
+}
 
-# Nerd Font MD weather icons
-ICO_SUNNY="󰖜"        # nf-md-weather_sunny
-ICO_NIGHT="󰖕"        # nf-md-weather_night
-ICO_PARTLY="󰖖"       # nf-md-weather_partly_cloudy
-ICO_CLOUDY="󰖐"       # nf-md-weather_cloudy
-ICO_RAIN="󰖘"         # nf-md-weather_rainy
-ICO_POURING="󰖗"      # nf-md-weather_pouring
-ICO_THUNDER="󰖔"      # nf-md-weather_lightning_rainy
-ICO_SNOW="󰖙"         # nf-md-weather_snowy
-ICO_SNOW_H="󰖚"       # nf-md-weather_snowy_heavy
-ICO_FOG="󰖑"          # nf-md-weather_fog
-ICO_COLD="󰹶"         # nf-md-snowflake (cold modifier)
+def fetch(url):
+    try:
+        with urlopen(url, timeout=5) as r:
+            return json.loads(r.read())
+    except Exception:
+        return None
 
-if [[ "$CONDITION" == *thunder* || "$CONDITION" == *storm* ]]; then
-    ICON="$ICO_THUNDER"; CLASS="storm"
-elif [[ "$CONDITION" == *blizzard* || "$CONDITION" == *"heavy snow"* || "$CONDITION" == *"moderate snow"* ]]; then
-    ICON="$ICO_SNOW_H"; CLASS="snow"
-elif [[ "$CONDITION" == *snow* || "$CONDITION" == *sleet* || "$CONDITION" == *ice* ]]; then
-    ICON="$ICO_SNOW"; CLASS="snow"
-elif [[ "$CONDITION" == *fog* || "$CONDITION" == *mist* || "$CONDITION" == *haze* ]]; then
-    ICON="$ICO_FOG"; CLASS="fog"
-elif [[ "$CONDITION" == *"heavy rain"* || "$CONDITION" == *torrential* || "$CONDITION" == *"moderate rain"* ]]; then
-    ICON="$ICO_POURING"; CLASS="rain"
-elif [[ "$CONDITION" == *drizzle* || "$CONDITION" == *"light rain"* || "$CONDITION" == *"patchy rain"* || "$CONDITION" == *shower* ]]; then
-    $IS_DAY && ICON="$ICO_RAIN" || ICON="$ICO_NIGHT$ICO_RAIN"; CLASS="rain"
-elif [[ "$CONDITION" == *overcast* ]]; then
-    ICON="$ICO_CLOUDY"; CLASS="cloudy"
-elif [[ "$CONDITION" == *"partly cloudy"* || "$CONDITION" == *partly* ]]; then
-    if $IS_DAY; then
-        (( TEMP < 15 )) && ICON="$ICO_PARTLY$ICO_COLD" || ICON="$ICO_PARTLY"
-    else
-        ICON="$ICO_NIGHT$ICO_CLOUDY"
-    fi
-    CLASS="cloudy"
-elif [[ "$CONDITION" == *cloudy* ]]; then
-    $IS_DAY && ICON="$ICO_CLOUDY" || ICON="$ICO_NIGHT$ICO_CLOUDY"; CLASS="cloudy"
-elif [[ "$CONDITION" == *sunny* || "$CONDITION" == *clear* ]]; then
-    if $IS_DAY; then
-        (( TEMP < 15 )) && ICON="$ICO_SUNNY$ICO_COLD" || ICON="$ICO_SUNNY"
-    else
-        (( TEMP < 10 )) && ICON="$ICO_NIGHT$ICO_COLD" || ICON="$ICO_NIGHT"
-    fi
-    CLASS="clear"
-else
-    $IS_DAY && ICON="$ICO_SUNNY" || ICON="$ICO_NIGHT"; CLASS="ok"
-fi
+def err():
+    print(json.dumps({"text":"󰖑  --°C","class":"error","tooltip":"Clima indisponível"}))
+    sys.exit(0)
 
-TOOLTIP="$CONDITION\n$TEMP_STR  |  Humidity: $HUMIDITY  |  Wind: $WIND"
+def get_loc():
+    if os.path.exists(LOC_F):
+        try:
+            d = json.load(open(LOC_F))
+            if time.time() - d.get("ts", 0) < 86400:
+                return d
+        except Exception:
+            pass
+    d = fetch("http://ip-api.com/json/?fields=lat,lon,city,country")
+    if d and "lat" in d:
+        d["ts"] = time.time()
+        os.makedirs(CACHE, exist_ok=True)
+        json.dump(d, open(LOC_F, "w"))
+        return d
 
-echo "{\"text\": \"$ICON  $TEMP_STR\", \"class\": \"$CLASS\", \"tooltip\": \"$TOOLTIP\"}"
+# Serve from cache when fresh
+if os.path.exists(WX_F):
+    try:
+        c = json.load(open(WX_F))
+        if time.time() - c.get("ts", 0) < 600:
+            print(c["out"])
+            sys.exit(0)
+    except Exception:
+        pass
+
+loc = get_loc()
+if not loc:
+    err()
+
+url = (
+    f"https://api.open-meteo.com/v1/forecast"
+    f"?latitude={loc['lat']}&longitude={loc['lon']}"
+    f"&current=temperature_2m,apparent_temperature,relative_humidity_2m,"
+    f"wind_speed_10m,weather_code,is_day"
+    f"&wind_speed_unit=kmh&temperature_unit=celsius&timezone=auto"
+)
+data = fetch(url)
+if not data or "current" not in data:
+    err()
+
+cur  = data["current"]
+code = cur.get("weather_code", 0)
+iday = cur.get("is_day", 1)
+temp = round(cur.get("temperature_2m", 0))
+feel = round(cur.get("apparent_temperature", 0))
+hum  = cur.get("relative_humidity_2m", 0)
+wind = cur.get("wind_speed_10m", 0)
+
+icon = (ICONS_D if iday else ICONS_N).get(code, "󰖜")
+cls  = CSS.get(code, "ok")
+desc = DESC.get(code, "Desconhecido")
+
+if cls == "clear" and temp < 10:
+    icon += "󰹶"
+
+tip = f"{desc}\n{temp}°C (sensação {feel}°C)  |  Umidade: {hum}%  |  Vento: {wind:.0f} km/h"
+out = json.dumps({"text": f"{icon}  {temp}°C", "class": cls, "tooltip": tip})
+
+os.makedirs(CACHE, exist_ok=True)
+json.dump({"ts": time.time(), "out": out}, open(WX_F, "w"))
+print(out)
