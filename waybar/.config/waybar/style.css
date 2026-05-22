@@ -170,6 +170,9 @@ window#waybar {
 #custom-weather:hover {
   background-color: #1a1b26;
   box-shadow: none;
+  border: none;
+  outline: none;
+  transition: none;
 }
 
 #custom-weather.rain   { color: #74c7ec; }
