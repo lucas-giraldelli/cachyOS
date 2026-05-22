@@ -123,7 +123,8 @@ class WeatherPopup(Gtk.Window):
         self.set_keep_above(True)
         self.set_resizable(False)
         self.set_type_hint(Gdk.WindowTypeHint.POPUP_MENU)
-        self.set_size_request(320, -1)
+        self.set_size_request(320, 330)
+        self.resize(320, 330)
 
         css = Gtk.CssProvider()
         css.load_from_data(CSS_DATA)
@@ -155,10 +156,18 @@ class WeatherPopup(Gtk.Window):
         self.body.set_margin_bottom(12)
         outer.pack_start(self.body, True, True, 0)
 
+        # Centered loading placeholder — replaced by content in _build
+        self._loading = Gtk.Box(orientation=Gtk.Orientation.VERTICAL)
+        self._loading.set_valign(Gtk.Align.CENTER)
+        self._loading.set_halign(Gtk.Align.CENTER)
+        lbl = Gtk.Label(label="↻ carregando...")
+        lbl.get_style_context().add_class("status")
+        self._loading.pack_start(lbl, False, False, 0)
+        self.body.pack_start(self._loading, True, True, 0)
+
         self._load()
 
     def _load(self):
-        self.status.set_text("↻ carregando...")
         threading.Thread(target=self._fetch, daemon=True).start()
 
     def _fetch(self):
@@ -174,6 +183,8 @@ class WeatherPopup(Gtk.Window):
 
     def _build(self, loc, wx):
         self.status.set_text("")
+        for child in self.body.get_children():
+            self.body.remove(child)
         cur   = wx["current"]
         daily = wx["daily"]
         hrly  = wx["hourly"]
@@ -280,7 +291,6 @@ class WeatherPopup(Gtk.Window):
 
         self.body.pack_start(hbox, False, False, 4)
         self.body.show_all()
-        self.resize(320, 1)
 
 
 win = WeatherPopup()
