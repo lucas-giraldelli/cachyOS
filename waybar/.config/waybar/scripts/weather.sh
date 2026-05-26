@@ -89,6 +89,14 @@ url = (
 )
 data = fetch(url)
 if not data or "current" not in data:
+    # API down — serve stale cache rather than error
+    if os.path.exists(WX_F):
+        try:
+            c = json.load(open(WX_F))
+            print(c["out"])
+            sys.exit(0)
+        except Exception:
+            pass
     err()
 
 cur  = data["current"]
