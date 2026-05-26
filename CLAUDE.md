@@ -62,13 +62,13 @@ bd close <id>         # Complete work
 |-----------|------|
 | CPU | AMD Ryzen 7 5800X3D (8c/16t) |
 | RAM | 48 GB |
-| GPU | NVIDIA RTX 4080 16GB — driver `595.58.03` |
+| GPU | NVIDIA RTX 4080 16GB — driver `595.71.05` |
 | Storage | NVMe Samsung 980 1TB (root+home), Kingston SSD 480GB, WD HDD 2TB |
 | Monitor | Samsung Odyssey G60SD — 2560x1440 @ 360Hz via DP-2 |
 | Mouse | Razer Naga Left-Handed Edition + vitvlkv Avalanche |
 
 ### Desktop Environment
-- **Window Manager**: Hyprland `0.54.3` on **Wayland**
+- **Window Manager**: Hyprland `0.55.0` on **Wayland**
 - Bar: `waybar`
 - Launcher: `rofi`, `wofi`
 - Notifications: `dunst`

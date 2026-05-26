@@ -9,12 +9,12 @@
 ## Launch Options (atual)
 
 ```
-PROTON_ENABLE_NVAPI=1 DXVK_ENABLE_NVAPI=1 PROTON_VKD3D_HEAP=1 MANGOHUD=1 MANGOHUD_CONFIG=position=top-right,fps=0,cpu_stats=0,gpu_stats=0,height=25,font_size=14 game-performance %command% LD_PRELOAD=""
+PROTON_ENABLE_NVAPI=1 DXVK_ENABLE_NVAPI=1 PROTON_VKD3D_HEAP=1 MANGOHUD=1 MANGOHUD_CONFIG=position=top-right,fps=0,cpu_stats=0,gpu_stats=0,height=25,font_size=14 LD_PRELOAD="" game-performance %command%
 ```
 
 > MangoHud config: frametime monitor minimal — ver [index.md](index.md#mangohud--frametime-monitor-minimal).
 
-> `LD_PRELOAD=""` desativa o Steam Overlay mas elimina stutters do Steam Game Recorder.
+> `LD_PRELOAD=""` desativa o Steam Overlay e elimina stutters do Steam Game Recorder. **Deve vir antes do `%command%`** — depois vira argumento do executável e não tem efeito.
 
 ## Benchmarks (MangoHud)
 
@@ -27,7 +27,11 @@ PROTON_ENABLE_NVAPI=1 DXVK_ENABLE_NVAPI=1 PROTON_VKD3D_HEAP=1 MANGOHUD=1 MANGOHU
 
 ## Notes
 
-- **PROTON_ENABLE_WAYLAND=1**: causa crash "Program timeout (infinite loop?)" ao trocar de workspace no Hyprland. Removido — jogo roda via XWayland estável.
+- **PROTON_ENABLE_WAYLAND=1**: causa crash "Program timeout (infinite loop?)" ao trocar de workspace no Hyprland. Removido — jogo deve rodar via XWayland.
+- **XWayland socket**: o symlink `/tmp/.X11-unix/X1` pode sumir após reiniciar a Steam sem reiniciar o Hyprland. Quando isso ocorre, Wine não acha o XWayland e cai para Wayland nativo (`xwayland: false` no `hyprctl clients`) — causando o crash de workspace switching. Fix: `ln -sf /tmp/.X11-unix/X1_ /tmp/.X11-unix/X1`. O exec-once no hyprland.conf cria isso no boot mas não quando a Steam reinicia.
+- **Verificar se está em XWayland**: `hyprctl -j clients | jq '.[] | select(.class == "steam_app_3672400") | {xwayland}'` — deve ser `true`. Se `false`, recriar o symlink.
+- **render_unfocused no Hyprland 0.55**: a rule `render_unfocused` do windowrule block format não está sendo aplicada em 0.55.0 (bug conhecido). O `misc:render_unfocused_fps` foi ajustado para 120 (padrão era 15 — causava stall do VKD3D).
+- **proton-cachyos 11 + Wayland nativo**: a versão 11 importou o `winewayland.drv` do Proton-EM, fazendo o Wine preferir Wayland nativo quando disponível. Versão 20260519 corrige o bug de "winewayland event dispatcher thread getting suspended" que causava o crash.
 - **DX12 confirmado**: MangoHud mostra VKD3D. Tentativa de `-dx11` não teve efeito.
 - **DLSS**: não encontrado nos menus do jogo. Jogo não suporta DLSS.
 - **PROTON_NVIDIA_LIBS_NO_32BIT=1**: quebra o jogo — Farever depende de libs 32-bit da Nvidia.
@@ -50,8 +54,11 @@ windowrule {
     name = farever
     match:class = steam_app_3672400
     immediate = true
-    render_unfocused = true
+    render_unfocused = on
 }
+
+# render_unfocused inline (block format não aplica em 0.55.0)
+windowrule = render_unfocused on, match:class steam_app_3672400
 ```
 
-> `render_unfocused = true` mantém o jogo renderizando ao trocar de workspace, reduzindo crashes por timeout.
+> `render_unfocused` mantém o jogo renderizando ao trocar de workspace. Em Hyprland 0.55.0, o block format não aplica o efeito — mantida a versão inline como fallback. `misc:render_unfocused_fps = 120` no hyprland.conf (padrão 15 causava stall do VKD3D/DX12).
