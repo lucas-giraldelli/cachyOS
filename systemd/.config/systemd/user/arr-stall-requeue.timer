@@ -1,0 +1,9 @@
+[Unit]
+Description=Roda arr-stall-requeue a cada 30 minutos
+
+[Timer]
+OnBootSec=5min
+OnUnitActiveSec=30min
+
+[Install]
+WantedBy=timers.target

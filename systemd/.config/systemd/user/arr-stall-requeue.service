@@ -1,0 +1,8 @@
+[Unit]
+Description=Detecta torrents stalled e blocklista no Radarr/Sonarr
+
+[Service]
+Type=oneshot
+ExecStart=/usr/bin/python3 /home/lukesh/scripts/arr-stall-requeue.py
+StandardOutput=journal
+StandardError=journal
