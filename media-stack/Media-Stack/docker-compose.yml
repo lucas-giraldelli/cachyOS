@@ -25,9 +25,11 @@ services:
       - "traefik.http.routers.jellyfin.rule=Host(`jellyfin.local`)"
       - "traefik.http.services.jellyfin.loadbalancer.server.port=8096"
     runtime: nvidia
-    devices:
-      - /dev/nvidia-caps/nvidia-cap1:/dev/nvidia-caps/nvidia-cap1
-      - /dev/nvidia-caps/nvidia-cap2:/dev/nvidia-caps/nvidia-cap2
+    # No explicit /dev/nvidia-caps devices: those are MIG-only nodes (the RTX 4080
+    # has no MIG support). The nvidia runtime + NVIDIA_DRIVER_CAPABILITIES inject
+    # nvidia0/nvidiactl/nvidia-uvm automatically, which is all NVENC needs. Binding
+    # the caps explicitly broke startup on driver updates when /dev/nvidia-caps
+    # wasn't recreated. See bd memory jellyfin-nvidia-caps-driver-update.
     deploy:
       resources:
         reservations:
