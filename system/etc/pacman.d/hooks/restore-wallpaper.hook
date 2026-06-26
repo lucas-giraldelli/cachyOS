@@ -1,0 +1,13 @@
+# Reapply the desktop wallpaper after awww/hyprland upgrades, which restart
+# the awww daemon mid-session and leave a black background.
+[Trigger]
+Operation = Upgrade
+Operation = Install
+Type = Package
+Target = awww
+Target = hyprland
+
+[Action]
+Description = Restoring desktop wallpaper (awww)...
+When = PostTransaction
+Exec = /usr/local/bin/restore-wallpaper.sh
