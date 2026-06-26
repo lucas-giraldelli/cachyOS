@@ -3,7 +3,7 @@
     "height": 32,
     "spacing": 4,
 
-    "modules-left": ["hyprland/workspaces", "custom/capslock", "hyprland/submap"],
+    "modules-left": ["hyprland/workspaces", "custom/capslock", "hyprland/submap", "custom/recording"],
     "modules-center": ["custom/ytmusic"],
     "modules-right": ["tray", "custom/bt-battery", "custom/docker", "group/perf", "custom/brightness", "pulseaudio", "custom/weather", "custom/network", "clock"],
 
@@ -17,6 +17,12 @@
         "format-icons": {
             "1": "󰋜", "2": "󰊢", "3": "󰨞", "4": "󰖟", "5": "󰊗", "6": "󰆼", "7": "󰝚", "8": "󰇮", "9": "󰆤"
         }
+    },
+
+    "custom/recording": {
+        "exec": "pidof gpu-screen-recorder > /dev/null && echo '{\"text\": \" REC\", \"class\": \"recording\", \"tooltip\": \"Gravando — Alt+Print para parar\"}' || echo '{\"text\": \"\", \"class\": \"\"}'",
+        "return-type": "json",
+        "interval": 2
     },
 
     "custom/docker": {

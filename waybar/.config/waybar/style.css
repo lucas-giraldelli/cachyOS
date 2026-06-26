@@ -209,3 +209,12 @@ window#waybar {
 #mpris.paused {
   color: #565f89;
 }
+
+#custom-recording.recording {
+  color: #f7768e;
+  animation: blink 1s linear infinite;
+}
+
+@keyframes blink {
+  50% { opacity: 0.3; }
+}
