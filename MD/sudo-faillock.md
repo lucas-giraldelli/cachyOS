@@ -11,6 +11,10 @@
 - **Typing the wrong password** multiple times (caps lock, keyboard layout)
 - **Dolphin/polkit** failing to authenticate when trying to mount devices
 - Scripts or services attempting `sudo` repeatedly without success
+- **Running `sudo` through a non-interactive prompt** (e.g. Claude Code's `!`
+  bash prompt). `sudo` fails with `a terminal is required to read the password`;
+  repeated attempts pile up failures that trip faillock. Run `sudo` in a real
+  terminal instead.
 
 ## Fix
 
