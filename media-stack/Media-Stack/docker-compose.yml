@@ -48,9 +48,7 @@ services:
       - TZ=America/Cuiaba
     volumes:
       - /home/lukesh/media-stack-config/radarr:/config
-      - /mnt/main/Media-Stack/data/media:/data/media
-      - /mnt/main/Media-Stack/data/manual:/data/manual
-      - /mnt/main/Media-Stack/data/downloads:/data/downloads
+      - /mnt/main/Media-Stack/data:/data
     ports:
       - 7878:7878
     restart: unless-stopped
@@ -71,9 +69,7 @@ services:
       - TZ=America/Cuiaba
     volumes:
       - /home/lukesh/media-stack-config/sonarr:/config
-      - /mnt/main/Media-Stack/data/media:/data/media
-      - /mnt/main/Media-Stack/data/manual:/data/manual
-      - /mnt/main/Media-Stack/data/downloads:/data/downloads
+      - /mnt/main/Media-Stack/data:/data
     ports:
       - 8989:8989
     restart: unless-stopped
@@ -155,8 +151,7 @@ services:
       - WEBUI_PORT=8081
     volumes:
       - /home/lukesh/media-stack-config/qbittorrent:/config
-      - /mnt/main/Media-Stack/data/media:/data/media
-      - /mnt/main/Media-Stack/data/downloads:/data/downloads
+      - /mnt/main/Media-Stack/data:/data
     ports:
       - 8081:8081
       - 6881:6881
