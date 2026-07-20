@@ -140,7 +140,44 @@ services:
       - "traefik.http.routers.jellyseerr.rule=Host(`jellyseerr.local`)"
       - "traefik.http.services.jellyseerr.loadbalancer.server.port=5055"
 
-  # Download Client: qBittorrent
+  # VPN gateway for qBittorrent — AirVPN (Brazil) over WireGuard.
+  # Provides a public IP + forwarded port to defeat the ISP CGNAT, and acts as a
+  # kill-switch: if the tunnel drops, qBittorrent loses all network (no IP leak).
+  # Credentials live in .env (gitignored). Set FORWARDED_PORT to the number from
+  # AirVPN Client Area -> Forwarded Ports, and match it in qBittorrent's listen port.
+  gluetun:
+    image: qmcgaw/gluetun:latest
+    container_name: gluetun
+    cap_add:
+      - NET_ADMIN
+    devices:
+      - /dev/net/tun:/dev/net/tun
+    environment:
+      - VPN_SERVICE_PROVIDER=airvpn
+      - VPN_TYPE=wireguard
+      - WIREGUARD_PRIVATE_KEY=${WIREGUARD_PRIVATE_KEY}
+      - WIREGUARD_PRESHARED_KEY=${WIREGUARD_PRESHARED_KEY}
+      - WIREGUARD_ADDRESSES=${WIREGUARD_ADDRESSES}
+      - SERVER_COUNTRIES=Brazil
+      # Allow inbound on the AirVPN forwarded port (peers reach qBittorrent here).
+      - FIREWALL_VPN_INPUT_PORTS=${FORWARDED_PORT}
+      # Allow LAN + docker subnet so the WebUI and Sonarr/Radarr can reach qBittorrent.
+      - FIREWALL_OUTBOUND_SUBNETS=172.19.0.0/16,192.168.100.0/24
+      - TZ=America/Cuiaba
+    ports:
+      - 8081:8081   # qBittorrent WebUI (served through gluetun's network namespace)
+    restart: unless-stopped
+    networks:
+      shared:
+        aliases:
+          - qbittorrent   # keep Sonarr/Radarr/Prowlarr reaching qBit by this hostname
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.qbittorrent.rule=Host(`qbit.local`)"
+      - "traefik.http.services.qbittorrent.loadbalancer.server.port=8081"
+
+  # Download Client: qBittorrent — routed entirely through the gluetun VPN tunnel.
+  # No own network/ports: it shares gluetun's namespace (network_mode: service:gluetun).
   qbittorrent:
     image: lscr.io/linuxserver/qbittorrent:latest
     container_name: qbittorrent
@@ -152,17 +189,11 @@ services:
     volumes:
       - /home/lukesh/media-stack-config/qbittorrent:/config
       - /mnt/main/Media-Stack/data:/data
-    ports:
-      - 8081:8081
-      - 6881:6881
-      - 6881:6881/udp
+    network_mode: "service:gluetun"
+    depends_on:
+      gluetun:
+        condition: service_healthy
     restart: unless-stopped
-    networks:
-      - shared
-    labels:
-      - "traefik.enable=true"
-      - "traefik.http.routers.qbittorrent.rule=Host(`qbit.local`)"
-      - "traefik.http.services.qbittorrent.loadbalancer.server.port=8081"
 
   # Cloudflare Bypass: Flaresolverr
   flaresolverr:
