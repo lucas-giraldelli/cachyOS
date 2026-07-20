@@ -13,6 +13,10 @@ function pclaude
     claude $argv
 end
 
+function browser-stack
+    BrowserStackLocal --key $argv[1] --force-local
+end
+
 # overwrite greeting
 # potentially disabling fastfetch
 #function fish_greeting
