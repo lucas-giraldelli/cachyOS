@@ -38,5 +38,5 @@ else
         --print-id)
     echo "$NOTIF_ID" > "$NOTIFFILE"
 
-    gpu-screen-recorder -w region -region "$REGION" -f 60 -c mp4 -k h264 -q high -o "$FILE"
+    gpu-screen-recorder -w region -region "$REGION" -f 60 -a "default_output|default_input" -c mp4 -k h264 -q high -o "$FILE"
 fi
