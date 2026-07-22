@@ -166,6 +166,83 @@ a `false` on the home IP — it will never be true under CGNAT.
 
 ---
 
+## Recurrence #1 — 2026-07-22: VPN flap → qBittorrent loses `tun0`
+
+Seeding died again. **Not CGNAT, not AirVPN, not a dropped forwarded port** — the
+tunnel was perfectly healthy the whole time, which is exactly why the original
+triage checklist below missed it (steps 1–2 pass, and you stop looking).
+
+### What happened
+
+At 06:06 gluetun restarted the VPN **3×** in three minutes — the healthcheck
+timed out right after the handshake, before MTU discovery settled:
+
+```
+WARN [vpn] restarting VPN because it failed to pass the healthcheck: startup check:
+  dialing: dial tcp4 104.16.132.229:443: i/o timeout
+INFO [MTU discovery] reverting VPN interface tun0 MTU to 1320 (PMTUD failed)
+...
+INFO [MTU discovery] setting VPN interface tun0 MTU to maximum valid MTU 1440   <- settled
+```
+
+Every VPN restart **destroys and recreates `tun0`** (it came back at ifindex 6).
+qBittorrent had been up since 07-20 and libtorrent only **enumerates interface
+addresses at startup** — it never re-binds to the new `tun0`. Result:
+
+```bash
+docker exec gluetun ip -4 addr        # tun0 = 10.189.158.193/32  (exists!)
+docker exec qbittorrent netstat -tlnp | grep 49781
+# 172.19.0.9:49781   LISTEN     <- docker bridge only
+# 127.0.0.1:49781    LISTEN
+# ::1:49781          LISTEN
+#                               <- tun0 MISSING
+```
+
+qBit was listening on the bridge; peers arrive on `tun0`; nobody answers.
+External test returned `111` (connection refused) and the tracker flagged
+not-connectable — with a green, healthy tunnel sitting right there.
+
+### GOTCHA — "gluetun healthy" does NOT mean "qBittorrent is reachable"
+
+These are two independent facts. Always check **which address** qBit is bound to,
+not just that the tunnel is up. A missing `tun0` line in `netstat` is the tell.
+
+### Fix (applied)
+
+1. Immediate: `docker compose restart qbittorrent` → re-bound to
+   `10.189.158.193:49781`, external test back to `0`.
+2. Permanent: bind by **interface name** instead of enumerated address, so a
+   recreated `tun0` is picked up automatically. In `qBittorrent.conf`
+   (stop the container first — see the shutdown-rewrite gotcha above):
+
+```ini
+[BitTorrent]
+Session\Interface=tun0
+Session\InterfaceName=tun0
+Session\InterfaceAddress=
+```
+
+Desirable side effect: qBit now binds **only** to `tun0`. If the tunnel
+disappears entirely it listens nowhere at all, instead of falling back to the
+docker bridge — a stronger kill-switch.
+
+Post-fix verification:
+
+```
+LISTEN 10.189.158.193:49781                      # tunnel only, bridge gone ✓
+connect_ex(146.70.248.10, 49781) -> 0            # reachable ✓
+webui 200 | sonarr/radarr/prowlarr -> qbit 200   # unchanged ✓
+```
+
+### Still open
+
+The gluetun VPN flap itself was **not** fixed — it will recur. The startup
+healthcheck fires before MTU settles. Mitigation not yet applied:
+`HEALTH_VPN_DURATION_INITIAL=30s` in the gluetun environment. With the
+interface binding above, a flap is now survivable either way.
+
+---
+
 ## Recurrence & things to watch
 
 - **AirVPN subscription expiry** (1-month plan). If it lapses, the tunnel drops,
@@ -189,7 +266,12 @@ a `false` on the home IP — it will never be true under CGNAT.
 
 1. `docker logs gluetun | tail` — tunnel connected? If not → `docker compose restart gluetun`.
 2. `docker exec gluetun wget -qO- https://ipinfo.io/ip` — is the exit an AirVPN IP?
-3. `docker exec qbittorrent netstat -tlnp | grep <port>` — qBit listening on the forwarded port?
+3. `docker exec qbittorrent netstat -tlnp | grep <port>` — qBit listening on the
+   forwarded port **and bound to the `tun0` address**? Compare against
+   `docker exec gluetun ip -4 addr`. If the `10.x` tun0 line is missing and you
+   only see `172.19.0.9` (bridge), the VPN flapped and qBit didn't re-bind →
+   `docker compose restart qbittorrent`. See Recurrence #1. **A healthy gluetun
+   does not rule this out — it's the most likely cause when everything looks fine.**
 4. Confirm `Session\Port` (`[BitTorrent]`) in `qBittorrent.conf` == AirVPN forwarded port == `FORWARDED_PORT` in `.env`.
 5. External test the **AirVPN IP**, not the home IP: `python3 -c "import socket;s=socket.socket();s.settimeout(10);print(s.connect_ex(('<vpn_ip>',<port>)))"` → `0` = open.
 6. Still failing? AirVPN forwarded port may have been dropped — re-add it in Client Area → Forwarded Ports, update `FORWARDED_PORT` + qBit listen port to match.
