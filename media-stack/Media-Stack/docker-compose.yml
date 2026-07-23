@@ -29,7 +29,7 @@ services:
     # has no MIG support). The nvidia runtime + NVIDIA_DRIVER_CAPABILITIES inject
     # nvidia0/nvidiactl/nvidia-uvm automatically, which is all NVENC needs. Binding
     # the caps explicitly broke startup on driver updates when /dev/nvidia-caps
-    # wasn't recreated. See bd memory jellyfin-nvidia-caps-driver-update.
+    # wasn't recreated. See MD/history/2026-06-26-jellyfin-nvenc-cdi-uvm.md.
     deploy:
       resources:
         reservations:

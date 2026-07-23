@@ -1,6 +1,0 @@
-repos:
-  primary: "."
-  additional:
-    - "/home/lukesh/.beads-planning"
-
-export.auto: false
