@@ -1,0 +1,13 @@
+[Unit]
+Description=Keep the XWayland socket symlink alive (Hyprland binds X<N>_ instead of X<N>)
+Documentation=https://github.com/hyprwm/Hyprland
+After=graphical-session.target
+
+[Service]
+Type=simple
+ExecStart=/bin/bash /home/lukesh/scripts/xwayland-socket-symlink.sh
+Restart=always
+RestartSec=2
+
+[Install]
+WantedBy=default.target
