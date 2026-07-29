@@ -20,7 +20,18 @@ set -euo pipefail
 ITEM="x-men-the-animated-series-1080p-ai-upscale_202204"
 BASE="https://archive.org/download/${ITEM}"
 DEST_ROOT="/mnt/main/Media-Stack/data/downloads"
-SHOW_DIR="X-Men (1992)"
+SHOW_DIR="X-Men - The Animated Series"
+SHOW_TITLE="X-Men The Animated Series"
+
+# Season/episode numbers come from Sonarr (TVDB 76115), not from a hardcoded
+# table: the archive's EP01..EP76 is a *broadcast* absolute numbering, while
+# TVDB counts the "Pryde of the X-Men" pilot as absolute 1. So archive EPnn maps
+# to TVDB absolute nn+1, and the season boundaries are TVDB's, not the ones
+# published with the upscale.
+SONARR_URL="http://localhost:8989"
+SONARR_CONFIG="/home/lukesh/media-stack-config/sonarr/config.xml"
+SERIES_TVDB=76115
+ABS_OFFSET=1
 
 EXT="mp4"
 JOBS=3
@@ -40,33 +51,45 @@ while [[ $# -gt 0 ]]; do
   esac
 done
 
-# Last absolute episode number of each season (13/13/17/10/23 = 76)
-SEASON_END=(13 26 43 53 76)
+# Only one instance may run: two concurrent runs hand the same output file to
+# two curls, and `-C -` then resumes each from the other's offset, producing a
+# file that is larger than the source and silently corrupt.
+LOCK="/tmp/fetch-xmen-tas.lock"
+exec 9>"$LOCK"
+flock -n 9 || { echo "another run holds $LOCK — aborting" >&2; exit 1; }
 
-season_of() {  # absolute ep -> season number
-  local ep="$1" s
-  for s in 1 2 3 4 5; do
-    (( ep <= SEASON_END[s-1] )) && { echo "$s"; return; }
-  done
-}
-ep_in_season() {  # absolute ep -> episode number within its season
-  local ep="$1" s prev
-  s="$(season_of "$ep")"
-  prev=0
-  (( s > 1 )) && prev="${SEASON_END[s-2]}"
-  echo $(( ep - prev ))
-}
+# Kill our own curls if we are interrupted, so no orphan keeps writing to a
+# file a later run will resume.
+cleanup() { rm -rf "${tmp:-}"; pkill -9 -P $$ 2>/dev/null; jobs -p | xargs -r kill -9 2>/dev/null; }
+tmp="$(mktemp -d)"
+trap cleanup EXIT INT TERM
 
 # --- fetch the item file list ---------------------------------------------
-tmp="$(mktemp -d)"
-trap 'rm -rf "$tmp"' EXIT
-
 echo ">> fetching file list for $ITEM"
 curl -sfL "https://archive.org/metadata/${ITEM}" -o "$tmp/meta.json"
 
-python3 - "$tmp/meta.json" "$EXT" > "$tmp/files.tsv" <<'PY'
+# --- fetch the authoritative episode map from Sonarr ----------------------
+echo ">> fetching episode map from Sonarr (tvdb $SERIES_TVDB)"
+API_KEY="$(grep -oP '(?<=<ApiKey>)[^<]+' "$SONARR_CONFIG")"
+[[ -n "$API_KEY" ]] || { echo "could not read Sonarr API key from $SONARR_CONFIG" >&2; exit 1; }
+
+SERIES_ID="$(curl -sf -H "X-Api-Key: $API_KEY" "$SONARR_URL/api/v3/series" \
+  | python3 -c "import json,sys;print(next((s['id'] for s in json.load(sys.stdin) if s['tvdbId']==$SERIES_TVDB),''))")"
+[[ -n "$SERIES_ID" ]] || {
+  echo "series tvdb $SERIES_TVDB is not in Sonarr yet — add it first" >&2; exit 1; }
+
+curl -sf -H "X-Api-Key: $API_KEY" \
+  "$SONARR_URL/api/v3/episode?seriesId=$SERIES_ID" -o "$tmp/sonarr.json"
+
+# --- join archive files to Sonarr episodes on absolute number -------------
+python3 - "$tmp/meta.json" "$tmp/sonarr.json" "$EXT" "$ABS_OFFSET" > "$tmp/files.tsv" <<'PY'
 import json, re, sys
-meta, ext = sys.argv[1], sys.argv[2]
+meta, sonarr, ext, offset = sys.argv[1], sys.argv[2], sys.argv[3], int(sys.argv[4])
+
+by_abs = {e["absoluteEpisodeNumber"]: e
+          for e in json.load(open(sonarr)) if e.get("absoluteEpisodeNumber")}
+
+missing = []
 for f in json.load(open(meta))["files"]:
     n = f["name"]
     if not n.lower().endswith("." + ext):
@@ -74,7 +97,16 @@ for f in json.load(open(meta))["files"]:
     m = re.match(r"EP(\d+)\s*-\s*(.+)\.\w+$", n)
     if not m:
         continue
-    print(f"{int(m.group(1))}\t{m.group(2).strip()}\t{n}\t{f.get('size', 0)}")
+    ep = by_abs.get(int(m.group(1)) + offset)
+    if ep is None:
+        missing.append(n)
+        continue
+    # Sonarr's title is canonical — it is what the library will end up named as
+    title = re.sub(r'[/:]', '-', ep["title"])
+    print(f"{ep['seasonNumber']}\t{ep['episodeNumber']}\t{title}\t{n}\t{f.get('size', 0)}")
+
+if missing:
+    print("no Sonarr episode for: " + ", ".join(missing), file=sys.stderr)
 PY
 
 count=$(wc -l < "$tmp/files.tsv")
@@ -84,14 +116,12 @@ echo ">> $count .$EXT episodes in item"
 # --- build the work list (skip seasons not requested / files already done) --
 : > "$tmp/queue"
 total_bytes=0
-while IFS=$'\t' read -r abs title src size; do
-  s="$(season_of "$abs")"
+while IFS=$'\t' read -r s e title src size; do
   [[ ",${SEASONS}," == *",${s},"* ]] || continue
 
-  e="$(ep_in_season "$abs")"
   seasondir="$(printf '%s/%s/Season %02d' "$DEST_ROOT" "$SHOW_DIR" "$s")"
   # Sonarr-friendly: Title - SxxEyy - Episode Name.ext
-  out="$(printf '%s/X-Men (1992) - S%02dE%02d - %s.%s' "$seasondir" "$s" "$e" "$title" "$EXT")"
+  out="$(printf '%s/%s - S%02dE%02d - %s.%s' "$seasondir" "$SHOW_TITLE" "$s" "$e" "$title" "$EXT")"
 
   if [[ -f "$out" ]] && [[ "$(stat -c %s "$out")" == "$size" ]]; then
     continue  # already complete
@@ -130,7 +160,7 @@ dl() {
   echo "-> $(basename "$out")"
   # --create-dirs is not enough: curl needs the encoded source name
   curl -fL --retry 5 --retry-delay 5 --retry-all-errors -C - \
-       --progress-bar \
+       --no-progress-meter \
        -o "$out" "${BASE}/$(python3 -c 'import urllib.parse,sys;print(urllib.parse.quote(sys.argv[1]))' "$src")"
 }
 export -f dl
@@ -141,4 +171,4 @@ xargs -a "$tmp/queue" -d '\n' -I{} -P "$JOBS" bash -c 'dl "$@"' _ {}
 echo
 echo ">> done. Import in Sonarr with:"
 echo "   Wanted -> Manual Import -> $DEST_ROOT/$SHOW_DIR"
-echo "   (series: X-Men (1992), TVDB 71663)"
+echo "   (series: X-Men: The Animated Series, TVDB 76115)"
