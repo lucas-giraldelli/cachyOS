@@ -135,6 +135,15 @@ docker exec jellyfin /usr/lib/jellyfin-ffmpeg/ffmpeg -hide_banner -loglevel erro
 
 ## Recurrence & permanent prevention
 
+> **Correction (2026-08-08):** do **not** install the hook proposed below.
+> `nvidia-container-toolkit` already ships an equivalent one at
+> `/usr/share/libalpm/hooks/nvidia-ctk-cdi.hook`, so the CDI spec *is*
+> regenerated automatically after driver upgrades. Adding this would be a
+> redundant duplicate. Note that automatic regeneration is not a full fix —
+> see [2026-08-08](2026-08-08-jellyfin-cdi-stale-nvidia-settings.md), where the
+> hook ran correctly but still produced a broken spec because a partial upgrade
+> left `nvidia-settings` on an older driver version.
+
 Problem 2 **recurs on every driver update that shifts the dynamic uvm major**,
 because the CDI spec is not regenerated automatically. Proposed `pacman` hook
 (`/etc/pacman.d/hooks/nvidia-cdi-regen.hook`) to regenerate it post-upgrade:
