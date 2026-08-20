@@ -22,3 +22,7 @@ end
 #function fish_greeting
 #    # smth smth
 #end
+
+
+# Added by Antigravity CLI installer
+set -gx PATH "/home/lukesh/.local/bin" $PATH
