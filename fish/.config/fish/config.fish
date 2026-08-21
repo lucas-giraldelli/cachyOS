@@ -5,7 +5,7 @@ set -x QT_IM_MODULE fcitx
 set -x XMODIFIERS @im=fcitx
 
 function cachy
-    cd ~/projects/cachyOS && pclaude --dangerously-skip-permissions
+    cd ~/projects/cachyOS && agy --dangerously-skip-permissions
 end
 
 function pclaude
