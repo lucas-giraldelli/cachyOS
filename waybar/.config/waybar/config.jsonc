@@ -1,7 +1,7 @@
 {
     "position": "bottom",
     "height": 32,
-    "spacing": 4,
+    "spacing": 0,
 
     "modules-left": ["hyprland/workspaces", "custom/capslock", "hyprland/submap", "custom/recording"],
     "modules-center": ["custom/ytmusic"],
