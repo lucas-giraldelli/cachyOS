@@ -37,11 +37,24 @@ window#waybar {
   border-radius: 8px;
 }
 
+.modules-right {
+  background-color: #1a1b26;
+  margin: 5px 10px 5px 0;
+  border-radius: 8px;
+  padding: 0 4px;
+}
+
+#custom-capslock,
+#custom-power {
+  background-color: #1a1b26;
+  padding: 4px 12px;
+  margin: 5px 0;
+  border-radius: 8px;
+}
+
 #tray,
 #custom-docker,
-#custom-capslock,
 #perf,
-#custom-power,
 #custom-bt-battery,
 #custom-brightness,
 #pulseaudio,
@@ -49,13 +62,13 @@ window#waybar {
 #custom-network,
 #custom-date,
 #clock {
-  background-color: #1a1b26;
-  padding: 4px 12px;
-  margin: 5px 0;
+  background-color: transparent;
+  padding: 4px 8px;
+  margin: 0;
+  border-radius: 0;
 }
 
 #perf {
-  border-radius: 8px;
   padding: 0;
 }
 
@@ -63,16 +76,14 @@ window#waybar {
 #perf #memory,
 #perf #custom-gpu {
   background-color: transparent;
-  padding: 4px 10px;
+  padding: 4px 8px;
   margin: 0;
   border-radius: 0;
   min-width: 42px;
 }
 
 #tray {
-  border-radius: 8px 0 0 8px;
-  margin-left: 10px;
-  padding: 4px 8px;
+  padding: 4px 6px;
 }
 
 #tray > widget:hover,
@@ -197,8 +208,6 @@ window#waybar {
 
 #clock {
   color: #e0af68;
-  border-radius: 0 8px 8px 0;
-  margin-right: 10px;
 }
 
 #mpris {
