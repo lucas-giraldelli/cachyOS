@@ -30,7 +30,11 @@ while IFS= read -r line; do
 done < <(bluetoothctl devices Connected 2>/dev/null)
 
 if ! $HAS_BATTERY; then
-    echo '{"text": "", "class": "hidden"}'
+    # No battery info – show a generic Bluetooth icon indicating offline/disabled
+    OUTPUT_TEXT="󰂱"
+    OUTPUT_TOOLTIP="Bluetooth off"
+    printf '{"text": "%s", "tooltip": "%s", "class": "bt-battery"}\
+' "$OUTPUT_TEXT" "$OUTPUT_TOOLTIP"
     exit 0
 fi
 
