@@ -18,3 +18,8 @@
 	create-tree = "!f() { \\\n      if git worktree list | grep -q \".worktrees/$1\"; then \\\n          echo \"Worktree already exists for this branch in .worktrees/$1\"; \\\n      elif git rev-parse --verify \"$1\" >/dev/null 2>&1; then \\\n          echo \"Existing branch detected. Creating worktree in .worktrees/$1...\"; \\\n          git worktree add \".worktrees/$1\" \"$1\" && \\\n          cd \".worktrees/$1\" && \\\n          ln -sf ../../node_modules node_modules && \\\n          ln -sf ../../.cert .cert; \\\n      else \\\n          echo \"New branch detected. Creating branch and worktree in .worktrees/$1...\"; \\\n          git worktree add \".worktrees/$1\" -b \"$1\" && \\\n          cd \".worktrees/$1\" && \\\n          ln -sf ../../node_modules node_modules && \\\n          ln -sf ../../.cert .cert; \\\n      fi; \\\n  }; f"
 [credential]
 	helper = /usr/lib/git-core/git-credential-libsecret
+[filter "lfs"]
+	smudge = git-lfs smudge -- %f
+	process = git-lfs filter-process
+	required = true
+	clean = git-lfs clean -- %f
