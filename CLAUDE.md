@@ -30,21 +30,22 @@ This file provides instructions and context for AI coding agents working on this
 
 ### OS & Kernel
 - **CachyOS Linux** (rolling release, Arch-based)
-- Kernel: `6.19.12-1-cachyos`
+- Kernel: `7.2.2-1-cachyos`
 - AUR helper: `paru v2.1.0` — use `paru` instead of `pacman` for installs
 
 ### Hardware
 | Component | Spec |
 |-----------|------|
 | CPU | AMD Ryzen 7 5800X3D (8c/16t) |
+| Motherboard | ASUS PRIME B450M-GAMING/BR |
 | RAM | 48 GB |
-| GPU | NVIDIA RTX 4080 16GB — driver `595.71.05` |
+| GPU | NVIDIA RTX 4080 16GB — driver `610.57.04` |
 | Storage | NVMe Samsung 980 1TB (root+home), Kingston SSD 480GB, WD HDD 2TB |
 | Monitor | Samsung Odyssey G60SD — 2560x1440 @ 360Hz via DP-2 |
 | Mouse | Razer Naga Left-Handed Edition + vitvlkv Avalanche |
 
 ### Desktop Environment
-- **Window Manager**: Hyprland `0.55.0` on **Wayland**
+- **Window Manager**: Hyprland `0.56.2` on **Wayland**
 - Bar: `waybar`
 - Launcher: `rofi`, `wofi`
 - Notifications: `dunst`
@@ -64,6 +65,15 @@ This file provides instructions and context for AI coding agents working on this
 - Current mouse sensitivity: `-0.5` (range: -1.0 to 1.0)
 - To change mouse speed: edit `sensitivity` in `~/.config/hypr/hyprland.conf`, then `hyprctl reload`
 - Per-device config: use `device { name=...; sensitivity=... }` in hyprland.conf
+
+### Sensors & Temperatures
+- Only `k10temp` (CPU) and `nvme` are exposed. **There are no fan RPM readings** — `nct6775` fails with
+  `No such device` and `asus_wmi_sensors` loads but exposes nothing on this board. Don't chase it.
+- Read **`Tccd1`** (real die temperature), not `Tctl`. `Tctl` is the boost-control value and runs
+  deliberately pessimistic — it sits 7-10 °C above the actual die.
+- Always judge temperatures as a **delta over room temperature**, not as absolute numbers. This machine
+  lives in a room that can hit 38 °C, where a 78 °C `Tctl` idle reading is normal, not a fault.
+- The 5800X3D's stacked cache makes it spike hard and fast under bursty load; its thermal cap is 90 °C.
 
 ### Package Management
 - Use `paru` for everything (wraps pacman + AUR)
