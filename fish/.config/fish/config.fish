@@ -26,3 +26,8 @@ end
 
 # Added by Antigravity CLI installer
 set -gx PATH "/home/lukesh/.local/bin" $PATH
+
+
+function osage
+    echo '{"modules": [{"type": "disk", "folders": "/", "format": "OS Age: {days} days"}]}' | fastfetch --config -
+end 
