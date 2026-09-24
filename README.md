@@ -11,7 +11,7 @@ Personal configuration for a CachyOS desktop running Hyprland on Wayland. The re
 | Bar | Waybar |
 | Launcher | Rofi |
 | Notifications | Dunst |
-| Terminals | Kitty, Alacritty |
+| Terminal | Kitty |
 | Shell | Fish (Zsh configuration is also kept) |
 | CPU | AMD Ryzen 7 5800X3D |
 | GPU | NVIDIA RTX 4080 |

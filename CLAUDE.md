@@ -49,7 +49,7 @@ This file provides instructions and context for AI coding agents working on this
 - Bar: `waybar`
 - Launcher: `rofi`
 - Notifications: `dunst`
-- Terminals: `kitty` (primary), `alacritty`
+- Terminal: `kitty` (Alt+T)
 - Browsers: `zen-browser`, `chromium`
 - Media: `vlc`
 - Gaming: `steam`
