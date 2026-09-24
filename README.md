@@ -9,7 +9,7 @@ Personal configuration for a CachyOS desktop running Hyprland on Wayland. The re
 | Distribution | CachyOS (Arch based, rolling release) |
 | Compositor | Hyprland on Wayland |
 | Bar | Waybar |
-| Launchers | Rofi, Wofi |
+| Launcher | Rofi |
 | Notifications | Dunst |
 | Terminals | Kitty, Alacritty |
 | Shell | Fish (Zsh configuration is also kept) |
