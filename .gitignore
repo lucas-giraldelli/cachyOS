@@ -6,3 +6,8 @@ waybar/.config/waybar/scripts/*.log
 .claude/settings.local.json
 waybar.log
 .env
+
+# work-specific launchers/functions (kept locally, not published)
+applications/.local/share/applications/jira.desktop
+applications/.local/share/applications/tns-*.desktop
+fish/.config/fish/functions/tnsbook.fish
