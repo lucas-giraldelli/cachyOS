@@ -1,5 +1,5 @@
 [Unit]
-Description=Roda arr-stall-requeue a cada 30 minutos
+Description=Run arr-stall-requeue every 30 minutes
 
 [Timer]
 OnBootSec=5min

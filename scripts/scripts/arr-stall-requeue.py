@@ -1,11 +1,14 @@
 #!/usr/bin/env python3
 """
 Detects stalled torrents in qBittorrent and removes+blocklists them in Radarr/Sonarr.
-- stalledDL com 0 seeds no swarm + sem atividade por 30min → blocklist imediato
-- stalledDL com seeds no swarm mas sem atividade por 2h → blocklist
+- stalledDL with 0 seeds in the swarm + no activity for 30min → blocklist right away
+- stalledDL with seeds in the swarm but no activity for 2h → blocklist
+
+Credentials come from the environment (see arr-stall-requeue.service, which
+loads the gitignored .env next to this script): QBIT_USER, QBIT_PASS, RADARR_KEY, SONARR_KEY.
 """
 
-import json, urllib.request, urllib.parse, http.cookiejar, time, logging
+import json, os, urllib.request, urllib.parse, http.cookiejar, time, logging
 from datetime import datetime, timezone
 
 logging.basicConfig(
@@ -16,17 +19,17 @@ logging.basicConfig(
 log = logging.getLogger(__name__)
 
 QBIT_URL  = "http://localhost:8081"
-QBIT_USER = "admin"
-QBIT_PASS = "***REMOVED***"
+QBIT_USER = os.environ.get("QBIT_USER", "admin")
+QBIT_PASS = os.environ["QBIT_PASS"]
 
 RADARR_URL = "http://localhost:7878"
-RADARR_KEY = "***REMOVED***"
+RADARR_KEY = os.environ["RADARR_KEY"]
 
 SONARR_URL = "http://localhost:8989"
-SONARR_KEY = "***REMOVED***"
+SONARR_KEY = os.environ["SONARR_KEY"]
 
-STALL_NO_SEEDS_SECS  = 30 * 60    # 30 min sem seeds no swarm → blocklist
-STALL_WITH_SEEDS_SECS = 2 * 60 * 60  # 2h com seeds mas sem conectar → blocklist
+STALL_NO_SEEDS_SECS  = 30 * 60    # 30 min with no seeds in the swarm → blocklist
+STALL_WITH_SEEDS_SECS = 2 * 60 * 60  # 2h with seeds but never connecting → blocklist
 
 
 def qbit_login():
@@ -93,25 +96,25 @@ def process_arr(name, base_url, api_key, stalled_hashes, extra_param=""):
             log.info(f"[{name}] blocklisting: {item['title'][:70]}")
     if to_remove:
         arr_blocklist(base_url, api_key, to_remove)
-        log.info(f"[{name}] {len(to_remove)} item(s) removidos e blocklisted")
+        log.info(f"[{name}] {len(to_remove)} item(s) removed and blocklisted")
     return len(to_remove)
 
 
 def main():
-    log.info("=== arr-stall-requeue iniciando ===")
+    log.info("=== arr-stall-requeue starting ===")
     try:
         opener = qbit_login()
     except Exception as e:
-        log.error(f"Falha ao conectar no qBittorrent: {e}")
+        log.error(f"Failed to connect to qBittorrent: {e}")
         return
 
     stalled = qbit_stalled(opener)
     if not stalled:
-        log.info("Nenhum torrent stalled com critério atingido.")
+        log.info("No stalled torrent met the criteria.")
         return
 
     for t in stalled:
-        log.info(f"Stalled: {t['name'][:60]} | seeds_swarm={t['seeds_swarm']} | inativo={t['inactive_min']}min")
+        log.info(f"Stalled: {t['name'][:60]} | seeds_swarm={t['seeds_swarm']} | inactive={t['inactive_min']}min")
 
     stalled_hashes = {t['hash'].lower() for t in stalled}
 
@@ -121,7 +124,7 @@ def main():
     total += process_arr("Sonarr", SONARR_URL, SONARR_KEY, stalled_hashes,
                          "&includeUnknownSeriesItems=true")
 
-    log.info(f"=== Concluído: {total} item(s) reciclados ===")
+    log.info(f"=== Done: {total} item(s) recycled ===")
 
 
 if __name__ == "__main__":

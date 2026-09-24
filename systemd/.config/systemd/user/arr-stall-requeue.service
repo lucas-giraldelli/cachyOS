@@ -1,8 +1,9 @@
 [Unit]
-Description=Detecta torrents stalled e blocklista no Radarr/Sonarr
+Description=Detect stalled torrents and blocklist them in Radarr/Sonarr
 
 [Service]
 Type=oneshot
+EnvironmentFile=%h/projects/cachyOS/scripts/scripts/.env
 ExecStart=/usr/bin/python3 /home/lukesh/scripts/arr-stall-requeue.py
 StandardOutput=journal
 StandardError=journal
