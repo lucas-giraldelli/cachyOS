@@ -33,7 +33,7 @@ Each top level directory is a [GNU Stow](https://www.gnu.org/software/stow/) pac
 | `gtk`, `qt`, `nwg-look` | GTK, Qt and Kvantum theming |
 | `hypr` | Hyprland configuration, window rules and helper scripts |
 | `kitty` | Kitty terminal configuration |
-| `walker` | Walker launcher configuration and the `tokyo-night` theme |
+| `walker` | Walker launcher configuration and the `arcade` theme (from PortShelf, on the waybar background) |
 | `scripts` | Standalone scripts, linked to `~/scripts` |
 | `shell` | Zsh configuration, Git configuration and XCompose rules |
 | `systemd` | User services and timers |

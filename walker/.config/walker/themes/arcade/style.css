@@ -1,12 +1,11 @@
-/* Tokyo Night, matching the rofi launcher this replaced (see git history of rofi/config.rasi). */
-@define-color bg #1a1b26;
-@define-color bg_alt #24283b;
-@define-color fg #c0caf5;
-@define-color fg_dim #565f89;
-@define-color fg_soft #a9b1d6;   /* unselected items: readable on the navy background */
-@define-color fg_muted #7982a9;  /* subtitles and the placeholder */
-@define-color cyan #33ccff;
-@define-color urgent #f7768e;
+/* PortShelf's Arcade theme (warm amber and cream) on the navy background of the waybar. */
+@define-color bg #1a1b26;        /* waybar background */
+@define-color bg_alt #24283b;    /* waybar modules: search box and selected entry */
+@define-color accent #f5b547;    /* Arcade accent */
+@define-color fg #f3eee6;        /* Arcade text: selected entry, typed text */
+@define-color fg_soft #c3bab0;   /* Arcade secondary text: unselected entries */
+@define-color fg_muted #8f877e;  /* subtitles and the placeholder */
+@define-color urgent #ff8a7a;    /* Arcade danger */
 
 * {
   all: unset;
@@ -16,7 +15,7 @@
 
 popover {
   background: @bg_alt;
-  border: 1px solid @cyan;
+  border: 1px solid @accent;
   border-radius: 12px;
   padding: 10px;
 }
@@ -27,7 +26,7 @@ scrollbar { opacity: 0; }
 
 .box-wrapper {
   background: @bg;
-  border: 2px solid @cyan;
+  border: 2px solid @accent;
   border-radius: 12px;
   padding: 12px;
 }
@@ -41,7 +40,7 @@ scrollbar { opacity: 0; }
 }
 
 .prompt {
-  color: @cyan;
+  color: @accent;
   margin-right: 8px;
 }
 
@@ -50,7 +49,7 @@ scrollbar { opacity: 0; }
   color: @fg;
 }
 .input placeholder { color: @fg_muted; opacity: 1; }
-.input selection { background: @fg_dim; }
+.input selection { background: @fg_muted; }
 
 .elephant-hint,
 .placeholder { color: @fg_muted; }
@@ -66,9 +65,9 @@ scrollbar { opacity: 0; }
 
 child:selected .item-box,
 row:selected .item-box {
-  color: #ffffff;
+  color: @fg;
   background: @bg_alt;
-  border-left: 3px solid @cyan;
+  border-left: 3px solid @accent;
 }
 
 .item-subtext { font-size: 10pt; color: @fg_muted; }
