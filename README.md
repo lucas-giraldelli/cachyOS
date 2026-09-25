@@ -27,6 +27,7 @@ Each top level directory is a [GNU Stow](https://www.gnu.org/software/stow/) pac
 | `btop` | btop configuration |
 | `chromium-ext` | Unpacked Chromium extension loaded by the Jira web app profile |
 | `chromium-wa-ext` | Unpacked Chromium extension loaded by the WhatsApp web app profile |
+| `elephant` | Elephant provider settings for the walker launcher (recently used applications first) |
 | `environment` | Session environment variables (`environment.d`) for input methods and gaming |
 | `fish` | Fish configuration and functions |
 | `gtk`, `qt`, `nwg-look` | GTK, Qt and Kvantum theming |
@@ -55,7 +56,7 @@ Install Stow and link the packages you need from the repository root:
 ```bash
 paru -S stow
 cd ~/projects/cachyOS
-stow -t ~ hypr waybar kitty fish walker mako systemd
+stow -t ~ hypr waybar kitty fish walker elephant mako systemd
 ```
 
 System files under `system` must be copied with root privileges, for example:
