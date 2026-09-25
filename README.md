@@ -10,7 +10,7 @@ Personal configuration for a CachyOS desktop running Hyprland on Wayland. The re
 | Compositor | Hyprland on Wayland |
 | Bar | Waybar |
 | Launcher | Rofi |
-| Notifications | Dunst |
+| Notifications | Mako |
 | Terminal | Kitty |
 | Shell | Fish (Zsh configuration is also kept) |
 | CPU | AMD Ryzen 7 5800X3D |
@@ -27,7 +27,7 @@ Each top level directory is a [GNU Stow](https://www.gnu.org/software/stow/) pac
 | `btop` | btop configuration |
 | `chromium-ext` | Unpacked Chromium extension loaded by the Jira web app profile |
 | `chromium-wa-ext` | Unpacked Chromium extension loaded by the WhatsApp web app profile |
-| `dunst`, `mako` | Notification daemon configuration |
+| `mako` | Notification daemon configuration |
 | `environment` | Session environment variables (`environment.d`) for input methods and gaming |
 | `fish` | Fish configuration and functions |
 | `gtk`, `qt`, `nwg-look` | GTK, Qt and Kvantum theming |
@@ -55,7 +55,7 @@ Install Stow and link the packages you need from the repository root:
 ```bash
 paru -S stow
 cd ~/projects/cachyOS
-stow -t ~ hypr waybar kitty fish rofi dunst systemd
+stow -t ~ hypr waybar kitty fish rofi mako systemd
 ```
 
 System files under `system` must be copied with root privileges, for example:

@@ -48,7 +48,7 @@ This file provides instructions and context for AI coding agents working on this
 - **Window Manager**: Hyprland `0.56.2` on **Wayland**
 - Bar: `waybar`
 - Launcher: `rofi`
-- Notifications: `dunst`
+- Notifications: `mako`
 - Terminal: `kitty` (Alt+T)
 - Browsers: `zen-browser`, `chromium`
 - Media: `vlc`
