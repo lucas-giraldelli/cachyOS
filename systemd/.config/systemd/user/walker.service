@@ -1,0 +1,13 @@
+[Unit]
+Description=Walker launcher, kept running so it opens instantly
+After=elephant.service graphical-session.target
+Requires=elephant.service
+PartOf=graphical-session.target
+
+[Service]
+ExecStart=/usr/bin/walker --gapplication-service
+Restart=on-failure
+RestartSec=2
+
+[Install]
+WantedBy=graphical-session.target

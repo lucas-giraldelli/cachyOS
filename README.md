@@ -9,7 +9,7 @@ Personal configuration for a CachyOS desktop running Hyprland on Wayland. The re
 | Distribution | CachyOS (Arch based, rolling release) |
 | Compositor | Hyprland on Wayland |
 | Bar | Waybar |
-| Launcher | Rofi |
+| Launcher | Walker (with the Elephant data provider) |
 | Notifications | Mako |
 | Terminal | Kitty |
 | Shell | Fish (Zsh configuration is also kept) |
@@ -33,7 +33,7 @@ Each top level directory is a [GNU Stow](https://www.gnu.org/software/stow/) pac
 | `gtk`, `qt`, `nwg-look` | GTK, Qt and Kvantum theming |
 | `hypr` | Hyprland configuration, window rules and helper scripts |
 | `kitty` | Kitty terminal configuration |
-| `rofi` | Rofi configuration |
+| `walker` | Walker launcher configuration and the `tokyo-night` theme |
 | `scripts` | Standalone scripts, linked to `~/scripts` |
 | `shell` | Zsh configuration, Git configuration and XCompose rules |
 | `systemd` | User services and timers |
@@ -55,7 +55,7 @@ Install Stow and link the packages you need from the repository root:
 ```bash
 paru -S stow
 cd ~/projects/cachyOS
-stow -t ~ hypr waybar kitty fish rofi mako systemd
+stow -t ~ hypr waybar kitty fish walker mako systemd
 ```
 
 System files under `system` must be copied with root privileges, for example:

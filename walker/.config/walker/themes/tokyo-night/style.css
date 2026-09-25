@@ -1,0 +1,92 @@
+/* Tokyo Night, matching the rofi launcher this replaced (see git history of rofi/config.rasi). */
+@define-color bg #1a1b26;
+@define-color bg_alt #24283b;
+@define-color fg #c0caf5;
+@define-color fg_dim #565f89;
+@define-color cyan #33ccff;
+@define-color urgent #f7768e;
+
+* {
+  all: unset;
+  font-family: "MesloLGS Nerd Font";
+  font-size: 13pt;
+}
+
+popover {
+  background: @bg_alt;
+  border: 1px solid @cyan;
+  border-radius: 12px;
+  padding: 10px;
+}
+
+.normal-icons { -gtk-icon-size: 16px; }
+.large-icons { -gtk-icon-size: 24px; }
+scrollbar { opacity: 0; }
+
+.box-wrapper {
+  background: @bg;
+  border: 2px solid @cyan;
+  border-radius: 12px;
+  padding: 12px;
+}
+
+.box { }
+
+.search-container {
+  background: @bg_alt;
+  border-radius: 8px;
+  padding: 10px 14px;
+}
+
+.prompt {
+  color: @cyan;
+  margin-right: 8px;
+}
+
+.input {
+  caret-color: @fg;
+  color: @fg;
+}
+.input placeholder { color: @fg_dim; opacity: 1; }
+.input selection { background: @fg_dim; }
+
+.elephant-hint,
+.placeholder { color: @fg_dim; }
+
+.list { color: @fg_dim; }
+
+.item-box {
+  border-radius: 8px;
+  padding: 8px 12px;
+  border-left: 3px solid transparent;
+}
+.item-image { margin-right: 10px; }
+
+child:selected .item-box,
+row:selected .item-box {
+  color: #ffffff;
+  border-left: 3px solid @cyan;
+}
+
+.item-subtext { font-size: 10pt; color: @fg_dim; }
+.item-image-text { font-size: 22pt; }
+.item-quick-activation { opacity: 0; }
+
+.calc .item-text { font-size: 18pt; color: @fg; }
+
+.symbols .item-image { font-size: 20pt; }
+
+.preview {
+  border: 1px solid @bg_alt;
+  border-radius: 8px;
+  color: @fg;
+}
+.preview .large-icons { -gtk-icon-size: 64px; }
+
+.keybinds { opacity: 0; }
+
+.error {
+  padding: 10px;
+  background: @urgent;
+  color: @bg;
+}

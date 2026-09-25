@@ -1,7 +1,7 @@
 [Desktop Entry]
 Name=Calculator
-Comment=rofi-calc
-Exec=rofi-calc-open
+Comment=Walker calculator
+Exec=walker -m calc
 Icon=accessories-calculator
 Type=Application
 Categories=Utility;Calculator;

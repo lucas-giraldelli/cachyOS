@@ -47,7 +47,7 @@ This file provides instructions and context for AI coding agents working on this
 ### Desktop Environment
 - **Window Manager**: Hyprland `0.56.2` on **Wayland**
 - Bar: `waybar`
-- Launcher: `rofi`
+- Launcher: `walker` (Alt+Space; `elephant` provides apps, calculator and clipboard history on Win+V; both run as systemd user services)
 - Notifications: `mako`
 - Terminal: `kitty` (Alt+T)
 - Browsers: `zen-browser`, `chromium`

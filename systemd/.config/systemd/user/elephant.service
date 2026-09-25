@@ -1,0 +1,12 @@
+[Unit]
+Description=Elephant, the data provider behind the walker launcher
+After=graphical-session.target
+PartOf=graphical-session.target
+
+[Service]
+ExecStart=/usr/bin/elephant
+Restart=on-failure
+RestartSec=2
+
+[Install]
+WantedBy=graphical-session.target
