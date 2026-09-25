@@ -3,6 +3,8 @@
 @define-color bg_alt #24283b;
 @define-color fg #c0caf5;
 @define-color fg_dim #565f89;
+@define-color fg_soft #a9b1d6;   /* unselected items: readable on the navy background */
+@define-color fg_muted #7982a9;  /* subtitles and the placeholder */
 @define-color cyan #33ccff;
 @define-color urgent #f7768e;
 
@@ -47,13 +49,13 @@ scrollbar { opacity: 0; }
   caret-color: @fg;
   color: @fg;
 }
-.input placeholder { color: @fg_dim; opacity: 1; }
+.input placeholder { color: @fg_muted; opacity: 1; }
 .input selection { background: @fg_dim; }
 
 .elephant-hint,
-.placeholder { color: @fg_dim; }
+.placeholder { color: @fg_muted; }
 
-.list { color: @fg_dim; }
+.list { color: @fg_soft; }
 
 .item-box {
   border-radius: 8px;
@@ -65,10 +67,11 @@ scrollbar { opacity: 0; }
 child:selected .item-box,
 row:selected .item-box {
   color: #ffffff;
+  background: @bg_alt;
   border-left: 3px solid @cyan;
 }
 
-.item-subtext { font-size: 10pt; color: @fg_dim; }
+.item-subtext { font-size: 10pt; color: @fg_muted; }
 .item-image-text { font-size: 22pt; }
 .item-quick-activation { opacity: 0; }
 
