@@ -27,16 +27,16 @@ Each top level directory is a [GNU Stow](https://www.gnu.org/software/stow/) pac
 | `btop` | btop configuration |
 | `chromium-ext` | Unpacked Chromium extension loaded by the Jira web app profile |
 | `chromium-wa-ext` | Unpacked Chromium extension loaded by the WhatsApp web app profile |
-| `mako` | Notification daemon configuration |
 | `environment` | Session environment variables (`environment.d`) for input methods and gaming |
 | `fish` | Fish configuration and functions |
 | `gtk`, `qt`, `nwg-look` | GTK, Qt and Kvantum theming |
 | `hypr` | Hyprland configuration, window rules and helper scripts |
 | `kitty` | Kitty terminal configuration |
-| `walker` | Walker launcher configuration and the `arcade` theme (from PortShelf, on the waybar background) |
+| `mako` | Notification daemon configuration |
 | `scripts` | Standalone scripts, linked to `~/scripts` |
 | `shell` | Zsh configuration, Git configuration and XCompose rules |
 | `systemd` | User services and timers |
+| `walker` | Walker launcher configuration and the `arcade` theme (from PortShelf, on the waybar background) |
 | `waybar` | Waybar configuration, styles and custom modules |
 | `wireplumber` | Audio policy overrides |
 
@@ -70,6 +70,14 @@ After linking user units, reload systemd and enable the timers that are required
 systemctl --user daemon-reload
 systemctl --user enable --now arr-stall-requeue.timer
 ```
+
+The launcher needs `walker` from the CachyOS repositories and Elephant with its providers from the AUR:
+
+```bash
+paru -S walker elephant-bin elephant-desktopapplications-bin elephant-calc-bin elephant-clipboard-bin elephant-providerlist-bin
+```
+
+Hyprland starts `elephant.service` and `walker.service` at login, so they do not need to be enabled.
 
 ## Secrets
 
