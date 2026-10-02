@@ -29,7 +29,7 @@
         "exec": "~/.config/waybar/scripts/docker-status.sh",
         "return-type": "json",
         "interval": 10,
-        "on-click": "kitty --title lazydocker sh -c 'cd /mnt/main/dns && lazydocker'"
+        "on-click": "kitty --title lazydocker sh -c 'cd ~ && lazydocker'"
     },
 
     "group/perf": {
@@ -38,8 +38,8 @@
     },
 
     "memory": {
-        "format": "󰘚  {avail:0.0f}GB",
-        "tooltip-format": "Disponível: {avail:0.1f}GB\nUsado: {used:0.1f}GB / {total:0.1f}GB",
+        "format": "󰘚  {avail:0.0f}GiB",
+        "tooltip-format": "Disponível: {avail:0.1f}GiB\nUsado: {used:0.1f}GiB / {total:0.1f}GiB",
         "interval": 2,
         "on-click": "kitty --class=btop-float -e btop"
     },
