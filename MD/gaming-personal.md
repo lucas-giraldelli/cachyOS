@@ -97,6 +97,23 @@ input {
 
 `Ctrl+;` is now free for use in games.
 
+### `ALT` binds — game mode submap
+
+Window management lives on `ALT` (split keyboard, right-hand ALT), so in a game `ALT+Q` would
+**kill the game** (`killactive`), and `ALT+W/A/S/D`, `ALT+Z`, `ALT+V`... would fire too. `F7`
+(fullscreen) also collides with game consoles.
+
+**Fix**: `~/.config/hypr/scripts/game-submap.sh` (started by `exec-once`) listens on the Hyprland
+event socket. While a `steam_app_*` window has focus it switches to the `game` submap, which only
+keeps `ALT+[0-9]` (workspaces), media/volume keys, `Print`, `ALT+Print` and `SUPER+F10`. Every
+other combo reaches the game. Switching workspace moves focus off the game, and the script drops
+back to the normal binds.
+
+- Check the current mode: `hyprctl submap` (`game` or `default`).
+- Escape hatch if the script dies while a game is focused: `SUPER+Escape`.
+- A game that is not `steam_app_*` (native Linux build, non-Steam launcher) needs its class added
+  to the `case` in the script.
+
 ---
 
 ## Per-Game Notes
