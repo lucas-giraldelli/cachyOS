@@ -7,6 +7,7 @@
 | [Smite 2](smite2.md) | Proton-GE | DX11 | |
 | [Farever](farever.md) | proton-cachyos | DX12 | |
 | [Deadlock](deadlock.md) | Proton | — | Left-handed IJKL keybinds |
+| [AION 2](aion2.md) | proton-cachyos-native | DX12 | |
 
 ---
 
