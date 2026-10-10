@@ -30,7 +30,7 @@ This file provides instructions and context for AI coding agents working on this
 
 ### OS & Kernel
 - **CachyOS Linux** (rolling release, Arch-based)
-- Kernel: `7.2.2-1-cachyos`
+- Kernel: `7.2.2-1-cachyos` (pinned with the NVIDIA driver, see `MD/history/2026-10-10-nvidia-615-dpms-wake-deadlock.md`)
 - AUR helper: `paru v2.1.0` — use `paru` instead of `pacman` for installs
 
 ### Hardware
@@ -39,7 +39,7 @@ This file provides instructions and context for AI coding agents working on this
 | CPU | AMD Ryzen 7 5800X3D (8c/16t) |
 | Motherboard | ASUS PRIME B450M-GAMING/BR |
 | RAM | 48 GB |
-| GPU | NVIDIA RTX 4080 16GB — driver `610.57.04` |
+| GPU | NVIDIA RTX 4080 16GB — driver `610.57.04` (pinned in `IgnorePkg`) |
 | Storage | NVMe Samsung 980 1TB (root+home), Kingston SSD 480GB, WD HDD 2TB |
 | Monitor | Samsung Odyssey G60SD — 2560x1440 @ 360Hz via DP-2 |
 | Mouse | Razer Naga Left-Handed Edition + vitvlkv Avalanche |
