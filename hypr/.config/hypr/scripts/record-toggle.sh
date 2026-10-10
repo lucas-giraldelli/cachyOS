@@ -16,7 +16,8 @@ if pgrep -x gpu-screen-reco > /dev/null; then
     if [ -f "$FILE" ]; then
         action=$(notify-send "Gravação salva" "$(basename "$FILE") · clique para abrir" \
             --icon=video-x-generic --action=default=Abrir --wait)
-        [ "$action" = default ] && nemo --select "$FILE" &
+        # nemo opens the folder with the file selected when given a file
+        [ "$action" = default ] && nemo "$FILE" &
     fi
 else
     # slurp: "X,Y WxH" → gpu-screen-recorder: "-region WxH+X+Y"
