@@ -39,7 +39,8 @@ Each top level directory is a [GNU Stow](https://www.gnu.org/software/stow/) pac
 | `systemd` | User services and timers |
 | `walker` | Walker launcher configuration and the `arcade` theme (from PortShelf, on the waybar background) |
 | `waybar` | Waybar configuration, styles and custom modules, unused since the dock replaced it |
-| `wireplumber` | Audio policy overrides |
+| `wireplumber` | Audio policy overrides (Bluetooth: no headset roles, larger output buffer) |
+| `pipewire` | PipeWire overrides (a larger minimum buffer for pulse clients such as games and Discord) |
 
 The following directories are not Stow packages:
 
