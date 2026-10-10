@@ -1,6 +1,5 @@
 source /usr/share/cachyos-fish-config/cachyos-config.fish
 
-set -x GTK_IM_MODULE fcitx
 set -x QT_IM_MODULE fcitx
 set -x XMODIFIERS @im=fcitx
 
