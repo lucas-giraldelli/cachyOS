@@ -8,9 +8,9 @@ Personal configuration for a CachyOS desktop running Hyprland on Wayland. The re
 |-----------|---------|
 | Distribution | CachyOS (Arch based, rolling release) |
 | Compositor | Hyprland on Wayland |
-| Bar | [smart-shell](https://github.com/lucas-giraldelli/smart-shell), a Quickshell dock (Waybar is kept but no longer started) |
+| Bar | A Quickshell dock (Waybar is kept but no longer started) |
 | Launcher | Walker (with the Elephant data provider) |
-| Notifications | smart-shell's notification popups (Mako is kept but no longer started) |
+| Notifications | The Quickshell dock (Mako is kept but no longer started) |
 | Terminal | Kitty |
 | Shell | Fish (Zsh configuration is also kept) |
 | CPU | AMD Ryzen 7 5800X3D |
@@ -33,12 +33,12 @@ Each top level directory is a [GNU Stow](https://www.gnu.org/software/stow/) pac
 | `gtk`, `qt`, `nwg-look` | GTK, Qt and Kvantum theming |
 | `hypr` | Hyprland configuration, window rules and helper scripts |
 | `kitty` | Kitty terminal configuration |
-| `mako` | Notification daemon configuration, unused since smart-shell shows notifications |
+| `mako` | Notification daemon configuration, unused since the dock shows notifications |
 | `scripts` | Standalone scripts, linked to `~/scripts` |
 | `shell` | Zsh configuration, Git configuration and XCompose rules |
 | `systemd` | User services and timers |
 | `walker` | Walker launcher configuration and the `arcade` theme (from PortShelf, on the waybar background) |
-| `waybar` | Waybar configuration, styles and custom modules, unused since the smart-shell dock replaced it |
+| `waybar` | Waybar configuration, styles and custom modules, unused since the dock replaced it |
 | `wireplumber` | Audio policy overrides |
 
 The following directories are not Stow packages:
@@ -58,8 +58,6 @@ paru -S stow
 cd ~/projects/cachyOS
 stow -t ~ hypr kitty fish walker elephant systemd
 ```
-
-The dock lives in its own repository, [smart-shell](https://github.com/lucas-giraldelli/smart-shell), cloned to `~/projects/smart-shell`. Hyprland starts it with `exec-once = qs -p ~/projects/smart-shell/shell`, and `smart-shell install full` installs what its widgets need. It is also the notification server, so `mako` must not run alongside it.
 
 System files under `system` must be copied with root privileges, for example:
 
