@@ -15,8 +15,11 @@ socat -U - UNIX-CONNECT:"$SOCK" | while IFS= read -r line; do
         activewindow\>\>*)
             class="${line#activewindow>>}"
             class="${class%%,*}"
-            # Only touch the submap when entering or leaving a game, so a
-            # manually entered submap (e.g. resize) is left alone.
+            # Ask Hyprland for the real submap: a config reload resets it
+            # without telling us. Only touch it when entering or leaving a
+            # game, so a manually entered submap (e.g. resize) is left alone.
+            current="$(hyprctl submap 2>/dev/null)"
+            [ "$current" = default ] && current=""
             if [[ "$class" == steam_app_* ]]; then
                 [ "$current" != game ] && hyprctl dispatch submap game > /dev/null
             elif [ "$current" = game ]; then
