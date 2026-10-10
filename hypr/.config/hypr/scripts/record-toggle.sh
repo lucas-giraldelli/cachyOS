@@ -25,13 +25,29 @@ else
     WH="${GEOM##* }"
     X="${XY%%,*}"
     Y="${XY##*,}"
-    REGION="${WH}+${X}+${Y}"
+    W="${WH%%x*}"
+    H="${WH##*x}"
+    # NVENC refuses frames below ~145 px a side: grow a small selection
+    # around its centre to 160 px
+    MIN=160
+    if [ "$W" -lt $MIN ]; then X=$(( X - (MIN - W) / 2 )); W=$MIN; fi
+    if [ "$H" -lt $MIN ]; then Y=$(( Y - (MIN - H) / 2 )); H=$MIN; fi
+    [ "$X" -lt 0 ] && X=0
+    [ "$Y" -lt 0 ] && Y=0
+    REGION="${W}x${H}+${X}+${Y}"
 
     FILE="$HOME/Videos/rec-$(date +%Y%m%d-%H%M%S).mp4"
     mkdir -p "$HOME/Videos"
     echo "$FILE" > "$FILEFILE"
 
-    "${DOCK[@]}" started >/dev/null 2>&1
-    gpu-screen-recorder -w region -region "$REGION" -f 60 -a "default_output|default_input" -c mp4 -k h264 -q high -o "$FILE"
+    # the dock's indicator right away, without waiting for the IPC call
+    "${DOCK[@]}" started >/dev/null 2>&1 &
+    gpu-screen-recorder -w "$REGION" -f 60 -a "default_output|default_input" -c mp4 -k h264 -q high -o "$FILE" \
+        2> /tmp/gsr-recorder.log
+    code=$?
     "${DOCK[@]}" stopped >/dev/null 2>&1
+    # a recorder that failed says why (the last error line of its log)
+    if [ $code -ne 0 ]; then
+        notify-send -u critical "Gravação falhou" "$(grep -m1 -i error /tmp/gsr-recorder.log)" --icon=media-record
+    fi
 fi
