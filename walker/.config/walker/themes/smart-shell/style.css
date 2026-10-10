@@ -1,9 +1,9 @@
 /* smart-shell: the dock's "glass" theme - translucent dark glass (blurred by
    Hyprland's layerrule on the walker namespace), a thin light edge, Inter,
    the sky-blue accent. Values from smart-shell/shell/Theme.qml (glass). */
-@define-color glass alpha(#1c1c20, 0.78);       /* menuBg */
+@define-color glass alpha(#1c1c20, 0.95);       /* menuBg, denser: a list over busy wallpapers */
 @define-color edge alpha(#ffffff, 0.28);        /* menuLine */
-@define-color surface alpha(#ffffff, 0.05);     /* menuSurface */
+@define-color surface alpha(#ffffff, 0.06);     /* menuSurface */
 @define-color hover alpha(#ffffff, 0.08);       /* menuHover */
 @define-color strong alpha(#ffffff, 0.13);      /* menuStrong */
 @define-color text #e4e4e7;                     /* menuText */
