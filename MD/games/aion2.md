@@ -30,5 +30,28 @@ the additions follow what fixed [Farever](farever.md), the other DX12 Unreal gam
   moves the game, Print / ALT+Print screenshot and record, every other ALT goes to the game.
 - Audio crackled with a Bluetooth headset (PipeWire xruns at a 256-sample quantum); fixed by the
   larger minimum buffers in the `pipewire` and `wireplumber` packages.
-- If stutters remain: try `-dx11` after `%command%` (it fixed Smite 2; not every Unreal game ships
-  DX11), and stop Docker, UFW and OpenRazer while playing, as for Smite 2.
+- No DX11: the game requires DX12 and ignores `-dx11`.
+
+## Crowded areas (CPU-bound)
+
+In towns and mass fights the GPU sits at ~40% and the frame rate follows the CPU's main thread.
+Two things helped, measured with MangoHud logs (`output_folder`, `autostart_log=1`):
+
+1. **Free the CPU.** The 5800X3D ran at its 90 °C cap (Tctl) all session, at ~4.1 GHz, while
+   background work took about four cores: the live wallpaper (`mpvpaper`, now paused by
+   `scripts/game-submap.sh` while a game has focus), headless browsers left running, the dock,
+   Docker.
+2. **In-game crowd settings**: Mass Combat Quality Very Low, Identical Player Appearance On,
+   Player Particle Effect Display Self and Party, other players' pets Off, shadows and effects
+   Low or Normal. Don't drop View Distance to the minimum, it gains little.
+
+| | Before | After |
+|---|---|---|
+| Average | 81 fps | 105 fps |
+| 1% low | 28 fps | 52 fps |
+| Hitches over 50 ms | 20/min | 9/min |
+| Time CPU-bound (GPU < 55%) | 65% | 25% |
+| Frame rate while CPU-bound | 57 fps | 109 fps |
+
+Hitches of 0.2-1 s remain, at about 5/min, when VRAM climbs: the game streaming in new
+characters and assets. That is the game's own and not tunable from here.
