@@ -5,6 +5,8 @@
 # leaving the game window drops back to the normal binds.
 # The live wallpaper (mpvpaper) is paused while a game has focus: it is hidden
 # anyway and takes most of a core the game needs.
+# ALT + mouse drag/resize is unbound while a game has focus: mouse binds stay
+# active in a submap, and games use ALT+click.
 
 SOCK="$XDG_RUNTIME_DIR/hypr/$HYPRLAND_INSTANCE_SIGNATURE/.socket2.sock"
 current=""
@@ -24,9 +26,13 @@ socat -U - UNIX-CONNECT:"$SOCK" | while IFS= read -r line; do
             [ "$current" = default ] && current=""
             if [[ "$class" == steam_app_* ]]; then
                 [ "$current" != game ] && hyprctl dispatch submap game > /dev/null
+                hyprctl --batch "keyword unbind ALT, mouse:272; keyword unbind ALT, mouse:273" > /dev/null
                 pkill -STOP -x mpvpaper
             else
-                [ "$current" = game ] && hyprctl dispatch submap reset > /dev/null
+                if [ "$current" = game ]; then
+                    hyprctl dispatch submap reset > /dev/null
+                    hyprctl --batch "keyword bindm ALT, mouse:272, movewindow; keyword bindm ALT, mouse:273, resizewindow" > /dev/null
+                fi
                 pkill -CONT -x mpvpaper
             fi
             ;;
