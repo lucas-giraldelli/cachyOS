@@ -8,7 +8,7 @@
 ## Launch Options
 
 ```
-PROTON_ENABLE_NVAPI=1 DXVK_ENABLE_NVAPI=1 VKD3D_CONFIG=descriptor_heap PROTON_DLSS_UPGRADE=1 PROTON_USE_WAYLAND=0 __GL_SHADER_DISK_CACHE_SKIP_CLEANUP=1 MANGOHUD=1 MANGOHUD_CONFIG=position=top-right,fps=0,cpu_stats=0,gpu_stats=0,height=25,font_size=14 LD_PRELOAD="" game-performance %command%
+PROTON_ENABLE_NVAPI=1 DXVK_ENABLE_NVAPI=1 VKD3D_CONFIG=descriptor_heap PROTON_DLSS_UPGRADE=1 PROTON_USE_WAYLAND=0 __GL_SHADER_DISK_CACHE_SKIP_CLEANUP=1 LD_PRELOAD="" game-performance %command%
 ```
 
 Was `VKD3D_CONFIG=descriptor_heap PROTON_DLSS_UPGRADE=1 PROTON_USE_WAYLAND=0 game-performance %command%`;
@@ -19,7 +19,7 @@ the additions follow what fixed [Farever](farever.md), the other DX12 Unreal gam
 - `PROTON_ENABLE_NVAPI=1 DXVK_ENABLE_NVAPI=1`: NVAPI for DLSS and Reflex.
 - `__GL_SHADER_DISK_CACHE_SKIP_CLEANUP=1`: keeps the driver's shader cache, so compiled shaders
   survive between sessions (fewer hitches on new areas).
-- MangoHud's minimal frametime graph, to see the stutters ([index.md](index.md#mangohud--frametime-monitor-minimal)).
+- No MangoHud overlay; add `MANGOHUD=1` back to measure ([index.md](index.md#mangohud--frametime-monitor-minimal)).
 
 ## Notes
 
