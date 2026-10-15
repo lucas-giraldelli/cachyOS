@@ -89,6 +89,7 @@ Credentials are never committed. Files named `.env` are ignored by Git, and each
 |------|---------|----------|
 | `scripts/scripts/.env` | `arr-stall-requeue.service` | `scripts/scripts/.env.example` |
 | `media-stack/Media-Stack/.env` | Docker Compose (VPN and tunnel credentials) | Variables referenced in `docker-compose.yml` |
+| `~/.config/tracker-upload/config.json` | `scripts/scripts/tracker-upload.py` (tracker, image host, TMDB and qBittorrent keys) | The header of the script |
 
 Restrict the permissions of these files with `chmod 600`.
 

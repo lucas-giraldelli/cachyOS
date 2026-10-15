@@ -11,6 +11,10 @@ Self-hosted media automation stack (Jellyfin + *arr) running via Docker Compose.
   Grabs from <private-tracker> are currently **manual** (no Prowlarr indexer): download the
   `.torrent`, add it to the stack qBittorrent (`http://localhost:8081`) with the
   right category, and Radarr/Sonarr import it automatically.
+  Uploads go through `~/scripts/tracker-upload.py <folder>`: it prints a preview (name,
+  TMDB ids, description with screenshots, releases already on the tracker) and, with
+  `--send`, uploads it and seeds it from the stack qBittorrent. Needs `mediainfo`,
+  `mktorrent` and `ffmpeg`.
 
 ## Layout (TRaSH-guides)
 
