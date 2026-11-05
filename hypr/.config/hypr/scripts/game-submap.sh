@@ -25,13 +25,13 @@ socat -U - UNIX-CONNECT:"$SOCK" | while IFS= read -r line; do
             current="$(hyprctl submap 2>/dev/null)"
             [ "$current" = default ] && current=""
             if [[ "$class" == steam_app_* ]]; then
-                [ "$current" != game ] && hyprctl dispatch submap game > /dev/null
-                hyprctl --batch "keyword unbind ALT, mouse:272; keyword unbind ALT, mouse:273" > /dev/null
+                [ "$current" != game ] && hyprctl dispatch 'hl.dsp.submap("game")' > /dev/null
+                hyprctl eval 'hl.unbind("ALT + mouse:272"); hl.unbind("ALT + mouse:273")' > /dev/null
                 pkill -STOP -x mpvpaper
             else
                 if [ "$current" = game ]; then
-                    hyprctl dispatch submap reset > /dev/null
-                    hyprctl --batch "keyword bindm ALT, mouse:272, movewindow; keyword bindm ALT, mouse:273, resizewindow" > /dev/null
+                    hyprctl dispatch 'hl.dsp.submap("reset")' > /dev/null
+                    hyprctl eval 'hl.bind("ALT + mouse:272", hl.dsp.window.drag(), { mouse = true }); hl.bind("ALT + mouse:273", hl.dsp.window.resize(), { mouse = true })' > /dev/null
                 fi
                 pkill -CONT -x mpvpaper
             fi
