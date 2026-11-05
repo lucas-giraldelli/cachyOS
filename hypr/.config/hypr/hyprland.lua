@@ -336,6 +336,10 @@ end)
 ---- WINDOWS AND WORKSPACES ----
 --------------------------------
 
+-- Headless "SHOTS" output (screenshots taken by agents): it gets workspace 40, so creating it
+-- never pulls one of the real workspaces onto an invisible screen.
+hl.workspace_rule({ workspace = "40", monitor = "SHOTS", default = true })
+
 -- smart-shell dock (~/projects/smart-shell): blur behind its glass. ignore_alpha
 -- keeps the transparent parts of the surface (room for popovers, the pet...) sharp;
 -- blur_popups gives its popovers (control center, calendar...) the same glass.
