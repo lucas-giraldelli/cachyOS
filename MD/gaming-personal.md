@@ -87,12 +87,14 @@ fcitx5 (input method framework) binds `Ctrl+;` globally as a clipboard popup sho
 **Root cause**: fcitx5 was installed as an input method for accented characters (pt-BR keyboard). It is not needed — Hyprland handles `us-intl` layout natively.
 
 **Fix applied**: fcitx5 removed entirely. Keyboard configured directly in Hyprland:
-```ini
-# ~/.config/hypr/hyprland.conf
-input {
-    kb_layout = us
-    kb_variant = intl
-}
+```lua
+-- ~/.config/hypr/hyprland.lua
+hl.config({
+    input = {
+        kb_layout  = "us",
+        kb_variant = "intl",
+    },
+})
 ```
 
 `Ctrl+;` is now free for use in games.
@@ -103,7 +105,7 @@ Window management lives on `ALT` (split keyboard, right-hand ALT), so in a game 
 **kill the game** (`killactive`), and `ALT+W/A/S/D`, `ALT+Z`, `ALT+V`... would fire too. `F7`
 (fullscreen) also collides with game consoles.
 
-**Fix**: `~/.config/hypr/scripts/game-submap.sh` (started by `exec-once`) listens on the Hyprland
+**Fix**: `~/.config/hypr/scripts/game-submap.sh` (started on `hyprland.start`) listens on the Hyprland
 event socket. While a `steam_app_*` window has focus it switches to the `game` submap, which only
 keeps `ALT+[0-9]` (workspaces), media/volume keys, `Print`, `ALT+Print` and `SUPER+F10`. Every
 other combo reaches the game. Switching workspace moves focus off the game, and the script drops

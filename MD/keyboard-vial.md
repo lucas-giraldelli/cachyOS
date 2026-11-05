@@ -57,7 +57,7 @@ Para descobrir qual tecla é, antes de caçar no mapa, monitore o nó enquanto a
 sudo evtest /dev/input/event4
 ```
 
-**Não há bind de lock no Hyprland** (`~/.config/hypr/hyprland.conf`). O único bind que mexe
+**Não há bind de lock no Hyprland** (`~/.config/hypr/hyprland.lua`). O único bind que mexe
 em tela é `$mainMod + F10`, que alterna o DPMS do `DP-2` — ver [hyprland-crashes](hyprland-crashes.md).
 Então comando que apaga a tela sem passar por ali veio do teclado.
 

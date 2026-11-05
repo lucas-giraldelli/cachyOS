@@ -61,10 +61,13 @@ This file provides instructions and context for AI coding agents working on this
 
 ### Wayland Rules
 - **NEVER suggest `xinput`** — it doesn't work on Wayland/Hyprland
-- Mouse/input config lives in `~/.config/hypr/hyprland.conf` under the `input {}` block
+- Hyprland is configured in Lua: `~/.config/hypr/hyprland.lua` (0.57 dropped `.conf`, see `MD/history/2026-11-05-hyprland-lua-migration.md`)
+- With a Lua config, `hyprctl dispatch` takes Lua (`hyprctl dispatch 'hl.dsp.submap("game")'`) and `hyprctl keyword` no longer works (use `hyprctl eval`)
+- Validate config edits with `Hyprland --verify-config --config ~/.config/hypr/hyprland.lua`
+- Mouse/input config lives in `hyprland.lua` under `hl.config({ input = { ... } })`
 - Current mouse sensitivity: `-0.5` (range: -1.0 to 1.0)
-- To change mouse speed: edit `sensitivity` in `~/.config/hypr/hyprland.conf`, then `hyprctl reload`
-- Per-device config: use `device { name=...; sensitivity=... }` in hyprland.conf
+- To change mouse speed: edit `sensitivity` in `hyprland.lua`, then `hyprctl reload`
+- Per-device config: use `hl.device({ name = "...", sensitivity = ... })` in `hyprland.lua`
 
 ### Sensors & Temperatures
 - Only `k10temp` (CPU) and `nvme` are exposed. **There are no fan RPM readings** — `nct6775` fails with

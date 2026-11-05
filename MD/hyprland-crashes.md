@@ -26,13 +26,14 @@ CExtImageCopyCaptureFrameV1 → CWLSurfaceResource::commitState
 
 ## Mitigations in place
 
-### 1. Headless monitor fallback (`hyprland.conf`)
+### 1. Headless monitor fallback (`hyprland.lua`)
 
 When DP-2 disconnects, Hyprland survives by moving windows to a virtual monitor instead of crashing:
 
-```ini
-monitor=DP-2,2560x1440@360,0x0,1
-monitor=,preferred,auto,1  # headless fallback — keeps Hyprland alive if DP-2 glitches/disconnects
+```lua
+hl.monitor({ output = "DP-2", mode = "2560x1440@360", position = "0x0", scale = 1 })
+-- Headless fallback: keeps Hyprland alive if DP-2 glitches or disconnects
+hl.monitor({ output = "", mode = "preferred", position = "auto", scale = 1 })
 ```
 
 ### 2. DPMS instead of the physical button
@@ -40,7 +41,7 @@ monitor=,preferred,auto,1  # headless fallback — keeps Hyprland alive if DP-2 
 Turning off the monitor via software does not generate a hotplug event — avoids the crash:
 
 ```bash
-hyprctl dispatch dpms toggle DP-2
+hyprctl dispatch 'hl.dsp.dpms({ action = "toggle", monitor = "DP-2" })'
 ```
 
 **Keybind:** `Super+F10` — toggles DPMS on DP-2.

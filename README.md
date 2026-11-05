@@ -19,7 +19,7 @@ Personal configuration for a CachyOS desktop running Hyprland on Wayland. The re
 
 ## Layout
 
-Each top level directory is a [GNU Stow](https://www.gnu.org/software/stow/) package that mirrors the home directory. For example, `hypr/.config/hypr/hyprland.conf` is linked to `~/.config/hypr/hyprland.conf`.
+Each top level directory is a [GNU Stow](https://www.gnu.org/software/stow/) package that mirrors the home directory. For example, `hypr/.config/hypr/hyprland.lua` is linked to `~/.config/hypr/hyprland.lua`.
 
 | Package | Contents |
 |---------|----------|
