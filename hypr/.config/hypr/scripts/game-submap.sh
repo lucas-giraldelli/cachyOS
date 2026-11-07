@@ -7,6 +7,8 @@
 # anyway and takes most of a core the game needs.
 # ALT + mouse drag/resize is unbound while a game has focus: mouse binds stay
 # active in a submap, and games use ALT+click.
+# The keyboard drops the "intl" variant while a game has focus: its dead keys
+# (' ` ~ ^ ") wait for a second key, so games never see them as hotkeys.
 
 SOCK="$XDG_RUNTIME_DIR/hypr/$HYPRLAND_INSTANCE_SIGNATURE/.socket2.sock"
 current=""
@@ -27,12 +29,14 @@ socat -U - UNIX-CONNECT:"$SOCK" | while IFS= read -r line; do
             if [[ "$class" == steam_app_* ]]; then
                 [ "$current" != game ] && hyprctl dispatch 'hl.dsp.submap("game")' > /dev/null
                 hyprctl eval 'hl.unbind("ALT + mouse:272"); hl.unbind("ALT + mouse:273")' > /dev/null
+                hyprctl eval 'hl.config({ input = { kb_variant = "" } })' > /dev/null
                 pkill -STOP -x mpvpaper
             else
                 if [ "$current" = game ]; then
                     hyprctl dispatch 'hl.dsp.submap("reset")' > /dev/null
                     hyprctl eval 'hl.bind("ALT + mouse:272", hl.dsp.window.drag(), { mouse = true }); hl.bind("ALT + mouse:273", hl.dsp.window.resize(), { mouse = true })' > /dev/null
                 fi
+                hyprctl eval 'hl.config({ input = { kb_variant = "intl" } })' > /dev/null
                 pkill -CONT -x mpvpaper
             fi
             ;;
