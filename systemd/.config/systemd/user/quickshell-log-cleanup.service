@@ -1,0 +1,8 @@
+[Unit]
+Description=Remove log dirs of Quickshell instances that are no longer running
+
+[Service]
+Type=oneshot
+ExecStart=/home/lukesh/scripts/quickshell-log-cleanup.sh
+StandardOutput=journal
+StandardError=journal
