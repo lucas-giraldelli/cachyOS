@@ -24,6 +24,8 @@ hl.monitor({ output = "", mode = "preferred", position = "auto", scale = 1 })
 local terminal    = "kitty"
 local fileManager = "nemo"
 local menu        = "walker"
+-- ~/wallpapers/live.mp4 is a symlink switched by ~/wallpapers/update.sh
+local liveWallpaper = 'mpvpaper -p -a FULL -o "no-audio loop" DP-2 /home/lukesh/wallpapers/live.mp4'
 
 
 -------------------
@@ -41,7 +43,7 @@ hl.on("hyprland.start", function()
     -- Static wallpaper
     -- hl.exec_cmd("awww-daemon && awww img ~/Pictures/pkmn.png")
     -- Live wallpaper
-    hl.exec_cmd('mpvpaper -p -a FULL -o "loop" DP-2 /home/lukesh/wallpapers/live.mp4')
+    hl.exec_cmd(liveWallpaper)
 
     hl.exec_cmd("blueman-applet")
     hl.exec_cmd("systemctl --user start elephant.service walker.service")
@@ -251,8 +253,23 @@ hl.bind("Print",        hl.dsp.exec_cmd(screenshot))
 hl.bind("CTRL + Print", hl.dsp.exec_cmd('grim -g "$(slurp)" /tmp/ocr-shot.png && tesseract /tmp/ocr-shot.png stdout -l por+eng | wl-copy'))
 hl.bind("ALT + Print",  hl.dsp.exec_cmd(recordToggle))
 hl.bind(mainMod .. " + V",   hl.dsp.exec_cmd("walker -m clipboard"))
--- Screen off on purpose: this starts the OLED panel-care cycle
-hl.bind(mainMod .. " + F10", hl.dsp.dpms({ action = "toggle", monitor = "DP-2" }))
+-- Screen off on purpose: this starts the OLED panel-care cycle.
+-- The live wallpaper goes with it: mpvpaper loses its EGL surface while the
+-- screen is off (EGL_BAD_SURFACE) and stays broken after wake, so it is stopped
+-- before turning off and started fresh once the screen is back.
+hl.bind(mainMod .. " + F10", function()
+    local screenOn = true
+    for _, m in ipairs(hl.get_monitors()) do
+        if m.name == "DP-2" then screenOn = m.dpms_status end
+    end
+    if screenOn then
+        hl.exec_cmd("pkill -x mpvpaper")
+        hl.dispatch(hl.dsp.dpms({ action = "off", monitor = "DP-2" }))
+    else
+        hl.dispatch(hl.dsp.dpms({ action = "on", monitor = "DP-2" }))
+        hl.exec_cmd("sleep 2 && pgrep -x mpvpaper || " .. liveWallpaper)
+    end
+end)
 
 -- Changed SUPER to ALT: split keyboard, right-hand ALT is within reach
 hl.bind("ALT + Q",         hl.dsp.window.close())
