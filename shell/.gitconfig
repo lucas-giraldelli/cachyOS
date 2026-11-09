@@ -23,3 +23,11 @@
 	process = git-lfs filter-process
 	required = true
 	clean = git-lfs clean -- %f
+[cola]
+	theme = smart-shell
+	icontheme = dark
+[cola "color"]
+	text = e4e4e7
+	add = 1e3a2c
+	remove = 4a1f28
+	header = 38bdf8
