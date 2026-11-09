@@ -267,7 +267,8 @@ hl.bind(mainMod .. " + F10", function()
         hl.dispatch(hl.dsp.dpms({ action = "off", monitor = "DP-2" }))
     else
         hl.dispatch(hl.dsp.dpms({ action = "on", monitor = "DP-2" }))
-        hl.exec_cmd("sleep 2 && pgrep -x mpvpaper || " .. liveWallpaper)
+        -- the panel needs a few seconds to wake; a surface made earlier stays black
+        hl.exec_cmd("sleep 6 && pkill -x mpvpaper; " .. liveWallpaper)
     end
 end)
 
