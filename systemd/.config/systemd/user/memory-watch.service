@@ -1,0 +1,6 @@
+[Unit]
+Description=Warn before RAM + swap run out
+
+[Service]
+Type=oneshot
+ExecStart=/home/lukesh/scripts/memory-watch.sh
