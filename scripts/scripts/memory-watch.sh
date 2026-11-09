@@ -3,21 +3,16 @@
 # systemd-oomd killed the whole Hyprland session; the main cause was 16 GB of
 # files in /tmp, which is RAM-backed (tmpfs) and spills into swap.
 # Runs every minute from memory-watch.timer. Notifies once per level and again
-# only after usage drops back below the warning level.
-set -euo pipefail
+# only after swap drops back below the warning level.
+set -uo pipefail
 
-WARN=75   # % of RAM + swap in use
-CRIT=85   # oomd starts killing around 90% of both
+WARN=70   # % of swap in use
+CRIT=85   # oomd kills once RAM and swap both pass 90%
 
-read -r used total < <(awk '
-    /^MemTotal:/ {mt=$2} /^MemAvailable:/ {ma=$2}
-    /^SwapTotal:/ {st=$2} /^SwapFree:/ {sf=$2}
-    END {print (mt-ma)+(st-sf), mt+st}' /proc/meminfo)
-pct=$(( used * 100 / total ))
+pct=$(awk '/^SwapTotal:/ {t=$2} /^SwapFree:/ {f=$2} END {print t ? int((t-f)*100/t) : 0}' /proc/meminfo)
 
 state="${XDG_RUNTIME_DIR:-/run/user/$(id -u)}/memory-watch.level"
 last=$(cat "$state" 2>/dev/null || echo 0)
-
 if   (( pct >= CRIT )); then level=2
 elif (( pct >= WARN )); then level=1
 else level=0
@@ -25,19 +20,30 @@ fi
 echo "$level" > "$state"
 (( level > last )) || exit 0
 
-gb() { awk -v k="$1" 'BEGIN{printf "%.1f", k/1048576}'; }
-tmp=$(df --output=used -k /tmp | tail -1)
-hog=$(du -xsk /tmp/* 2>/dev/null | sort -rn | head -1 | awk '{printf "%.1f GB %s", $1/1048576, $2}' || true)
-top=$(ps -eo rss=,comm= --sort=-rss | head -3 | awk '{printf "%s %.1f GB, ", $2, $1/1048576}' || true)
+# The cause is the biggest of: one app (all its processes, RAM + swap) or one
+# folder in /tmp (files there live in RAM too).
+app=$(for s in /proc/[0-9]*/status; do
+          awk '/^Name:/ {n=$2} /^VmRSS:/ {r=$2} /^VmSwap:/ {s=$2} END {if (n) print n, r+s}' "$s" 2>/dev/null
+      done | awk '{a[$1]+=$2} END {for (n in a) print a[n], n}' | sort -rn | head -1)
+dir=$(du -xsk /tmp/* /tmp/claude-*/* 2>/dev/null | grep -v "^[0-9]*\s/tmp/claude-[0-9]*$" | sort -rn | head -1)
 
-body="RAM + swap: ${pct}% ($(gb "$used") of $(gb "$total") GB)
-/tmp (in RAM): $(gb "$tmp") GB, largest: ${hog:-none}
-Top: ${top%, }"
+read -r app_kb app_name <<< "$app"
+read -r dir_kb dir_path <<< "$dir"
+if (( ${dir_kb:-0} > ${app_kb:-0} )); then
+    size=$dir_kb
+    case "$dir_path" in
+        /tmp/claude-*/*) project=${dir_path##*/-home-lukesh-}
+                         name="temp files of the Claude session in ${project#projects-}" ;;
+        *)               name="files in $dir_path" ;;
+    esac
+else
+    size=$app_kb
+    name="$app_name"
+fi
+cause="$name ($(awk -v k="$size" 'BEGIN {printf "%.1f", k/1048576}') GB)"
 
 if (( level == 2 )); then
-    notify-send -u critical -a "Memory" "Memory almost full: ${pct}%" \
-        "$body
-At ~90% the session gets killed. Close something or clean /tmp."
+    notify-send -u critical -a Memory "Free up swap: ${pct}%" "Cause: $cause. At 90% the session gets killed."
 else
-    notify-send -u normal -a "Memory" "Memory high: ${pct}%" "$body"
+    notify-send -u normal -a Memory "Free up swap: ${pct}%" "Cause: $cause"
 fi
