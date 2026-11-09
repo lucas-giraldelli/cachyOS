@@ -29,9 +29,13 @@
 
   // Panels on the right, like workbench.sideBar.location = right
   "project_panel": { "dock": "right", "auto_fold_dirs": false },
-  "outline_panel": { "dock": "right" },
+  "outline_panel": { "dock": "right", "button": false },
   "git_panel": { "dock": "right" },
-  "collaboration_panel": { "dock": "right" },
+  // Status bar: keep only the file explorer, git and terminal buttons
+  "collaboration_panel": { "dock": "right", "button": false },
+  "notification_panel": { "button": false },
+  "agent": { "button": false },
+  "debugger": { "button": false },
 
   // Editor (editor.*)
   "tab_size": 2,
