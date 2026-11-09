@@ -1,0 +1,10 @@
+// On top of base_keymap "VSCode" (settings.json).
+[
+  {
+    "context": "Workspace",
+    "bindings": {
+      // open another repo (VS Code uses this for go-to-symbol)
+      "ctrl-shift-o": "workspace::Open"
+    }
+  }
+]

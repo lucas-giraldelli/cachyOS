@@ -1,0 +1,5 @@
+# Zed writes state here too; only the config is tracked.
+*
+!.gitignore
+!settings.json
+!keymap.json

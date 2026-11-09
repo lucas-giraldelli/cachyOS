@@ -1,0 +1,80 @@
+// Zed settings, carried over from the old VS Code setup
+// (~/.config/Code/User/settings.json). VS Code-only extras (power mode, the
+// background image, peacock, the Claude/Copilot panels) have no Zed equivalent.
+{
+  "base_keymap": "VSCode",
+  "telemetry": { "diagnostics": false, "metrics": false },
+
+  // Looks: Tokyo Night + Material icons, Fira Code with ligatures
+  "theme": { "mode": "dark", "light": "One Light", "dark": "Tokyo Night" },
+  "icon_theme": "Material Icon Theme",
+  "auto_install_extensions": {
+    "tokyo-night": true,
+    "material-icon-theme": true,
+    "php": true,
+    "svelte": true,
+    "astro": true,
+    "csharp": true,
+    "dockerfile": true,
+    "docker-compose": true,
+    "toml": true,
+    "qml": true
+  },
+  "buffer_font_family": "Fira Code",
+  "buffer_font_features": { "calt": true, "liga": true },
+  "buffer_font_size": 17,
+  "buffer_line_height": "comfortable",
+  "ui_font_family": "Inter",
+  "ui_font_size": 16,
+
+  // Panels on the right, like workbench.sideBar.location = right
+  "project_panel": { "dock": "right", "auto_fold_dirs": false },
+  "outline_panel": { "dock": "right" },
+  "git_panel": { "dock": "right" },
+  "collaboration_panel": { "dock": "right" },
+
+  // Editor (editor.*)
+  "tab_size": 2,
+  "format_on_save": "on",
+  "remove_trailing_whitespace_on_save": true,
+  "ensure_final_newline_on_save": true,
+  "show_whitespaces": "all",
+  "wrap_guides": [80, 120],
+  "current_line_highlight": "gutter",
+  "minimap": { "show": "always" },
+  "sticky_scroll": { "enabled": true },
+  "inlay_hints": { "enabled": true },
+  "show_edit_predictions": false,
+  "preview_tabs": { "enabled": false },
+  "confirm_quit": false,
+
+  // Git: diff hunks in the gutter, blame off (gitlens showed it on demand)
+  "git": {
+    "git_gutter": "tracked_files",
+    "inline_blame": { "enabled": false }
+  },
+
+  // Big generated folders stay out of search and the file finder
+  "file_scan_exclusions": [
+    "**/.git", "**/.svn", "**/.hg", "**/CVS", "**/.DS_Store", "**/Thumbs.db",
+    "**/.classpath", "**/.settings",
+    "**/node_modules", "**/.pnpm-store", "**/dist", "**/.next", "**/.nuxt",
+    "**/.turbo", "**/.nx", "**/coverage", "**/vendor", "**/target", "**/.godot",
+    "**/Library", "**/Temp", "**/obj"
+  ],
+
+  "terminal": {
+    "shell": { "program": "fish" },
+    "font_size": 15
+  },
+
+  // Prettier for TS/TSX (esbenp.prettier-vscode), no format on save for QML
+  "languages": {
+    "TypeScript": { "formatter": "prettier" },
+    "TSX": { "formatter": "prettier" },
+    "QML": { "format_on_save": "off" }
+  },
+  "lsp": {
+    "qmlls": { "binary": { "path": "/usr/lib/qt6/bin/qmlls" } }
+  }
+}
