@@ -25,7 +25,7 @@ local terminal    = "kitty"
 local fileManager = "nemo"
 local menu        = "walker"
 -- ~/wallpapers/live.mp4 is a symlink switched by ~/wallpapers/update.sh
-local liveWallpaper = 'mpvpaper -p -a FULL -o "no-audio loop" DP-2 /home/lukesh/wallpapers/live.mp4'
+local liveWallpaper = 'mpvpaper -p -a FULL -o "no-audio loop really-quiet" DP-2 /home/lukesh/wallpapers/live.mp4'
 
 
 -------------------
