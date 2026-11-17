@@ -5,7 +5,7 @@ function frame --description 'Save a video frame as a PNG with the colors a play
     #   frame --south-park-s03e01 2:16      the same search as a flag (dashes become spaces)
     #   frame ~/video.mkv 1:02:03
     # A search is looked up in the media library: every word must appear in the path.
-    # Frames go to ~/Downloads/frames/.
+    # Frames go to ~/frames/<show>/ (straight to ~/frames/ for files outside the library).
     if test (count $argv) -lt 2
         echo 'usage: frame <file | search> <time> [count]' >&2
         return 1
@@ -43,7 +43,9 @@ function frame --description 'Save a video frame as a PNG with the colors a play
     # Force BT.709, expand the limited TV range and write an ordinary 8-bit PNG.
     set -l color 'scale=in_color_matrix=bt709:in_range=tv:out_range=pc:flags=accurate_rnd+full_chroma_int,format=rgb24'
 
-    set -l outdir ~/Downloads/frames
+    set -l outdir ~/frames
+    set -l show (string match -r -g '^/mnt/main/Media-Stack/data/media/shows/([^/]+)/' -- $src)
+    test -n "$show"; and set outdir $outdir/$show
     mkdir -p $outdir
     set -l name (path change-extension '' (path basename -- $src))_(string replace -a ':' '.' -- $at)
 
