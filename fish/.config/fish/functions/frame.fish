@@ -2,6 +2,7 @@ function frame --description 'Save a video frame as a PNG with the colors a play
     # Usage: frame <file | search> <time> [count]
     #   frame 'south park s03e01' 2:16      one frame at 2:16
     #   frame 'south park s03e01' 2:16 8    8 frames spread over the 2 seconds around 2:16
+    #   frame --south-park-s03e01 2:16      the same search as a flag (dashes become spaces)
     #   frame ~/video.mkv 1:02:03
     # A search is looked up in the media library: every word must appear in the path.
     # Frames go to ~/Downloads/frames/.
@@ -14,6 +15,11 @@ function frame --description 'Save a video frame as a PNG with the colors a play
     set -l at $argv[2]
     set -l n 1
     test (count $argv) -ge 3; and set n $argv[3]
+
+    # --south-park-s03e01 is shorthand for the search 'south park s03e01'.
+    if string match -q -- '--*' $src
+        set src (string replace -a -- '-' ' ' (string sub -s 3 -- $src))
+    end
 
     if not test -f "$src"
         set -l matches (find /mnt/main/Media-Stack/data/media -type f \
