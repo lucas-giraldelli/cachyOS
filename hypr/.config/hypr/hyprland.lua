@@ -706,16 +706,6 @@ hl.window_rule({
 })
 
 hl.window_rule({
-    -- Claude desktop app: keep it floating so it stays a movable overlay
-    -- on any workspace instead of tiling into the layout.
-    name      = "claude-float",
-    match     = { class = "com.anthropic.Claude" },
-    float     = true,
-    size      = "1920 1200",
-    center    = true,
-})
-
-hl.window_rule({
     name      = "snowbrawl",
     match     = { class = "^(snowbrawl|sno2play)\\.exe$" },
     float     = true,
