@@ -358,6 +358,34 @@ end)
 -- never pulls one of the real workspaces onto an invisible screen.
 hl.workspace_rule({ workspace = "40", monitor = "SHOTS", default = true })
 
+-- "grid" layout: two columns, as many rows as needed (4 windows = 2x2). With an odd
+-- count the last window spans the full width of its row. Used by workspace 9.
+hl.layout.register("grid", {
+    recalculate = function(ctx)
+        local n = #ctx.targets
+        if n == 0 then return end
+        local cols = n == 1 and 1 or 2
+        local rows = math.ceil(n / cols)
+        for i, target in ipairs(ctx.targets) do
+            if i == n and n % cols == 1 and cols > 1 then
+                -- odd one out: take the whole last row
+                local row = ctx:row(rows, rows)
+                target:place(row)
+            else
+                target:place(ctx:grid_cell(i, cols, rows))
+            end
+        end
+    end,
+})
+
+-- Workspace 9: terminals in a 2x2 grid with wide gaps, so every window stands apart.
+hl.workspace_rule({
+    workspace = "9",
+    gaps_out  = { top = 56, right = 70, bottom = 30, left = 70 },
+    gaps_in   = 25,
+    layout    = "lua:grid",
+})
+
 -- smart-shell dock (~/projects/smart-shell): blur behind its glass. ignore_alpha
 -- keeps the transparent parts of the surface (room for popovers, the pet...) sharp;
 -- blur_popups gives its popovers (control center, calendar...) the same glass.
