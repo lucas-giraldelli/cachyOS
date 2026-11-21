@@ -642,6 +642,13 @@ hl.window_rule({
 })
 
 hl.window_rule({
+    -- Workspace 7 is communication: WhatsApp, Discord (vesktop) and music
+    name      = "vesktop-workspace",
+    match     = { class = "^(vesktop)$" },
+    workspace = "7",
+})
+
+hl.window_rule({
     name      = "qbit-web-workspace",
     match     = { class = "chrome-localhost__.*" },
     workspace = "10",
