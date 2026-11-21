@@ -1,2 +1,4 @@
 .githooks
 .playwright-mcp
+
+**/.claude/settings.local.json
