@@ -90,10 +90,10 @@ hl.permission("/usr/(lib|libexec|lib64)/xdg-desktop-portal-hyprland", "screencop
 
 hl.config({
     general = {
-        gaps_in = 5,
+        gaps_in = 8,
         -- The bottom gap matches the smart-shell dock's edge gap (Theme.edge 8 +
         -- border_size 2), so the dock sits evenly between window and screen
-        gaps_out = { top = 20, right = 20, bottom = 10, left = 20 },
+        gaps_out = { top = 23, right = 23, bottom = 10, left = 23 },
 
         border_size = 2,
 
