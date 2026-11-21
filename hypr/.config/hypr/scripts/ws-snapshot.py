@@ -108,11 +108,24 @@ def save(ws):
     notify(f"Workspace {ws} saved ({len(windows)} windows)")
 
 
+def bring_here(ws, client):
+    """Put a window on ws, tiled: config rules may have floated it or sent it elsewhere
+    (the Claude app's rule floats it on workspace 9)."""
+    addr = client["address"]
+    if client["workspace"]["id"] != ws:
+        dispatch(f'hl.dsp.window.move({{ workspace = "{ws}", window = "address:{addr}" }})')
+    if client["floating"]:
+        dispatch(f'hl.dsp.window.float({{ action = "unset", window = "address:{addr}" }})')
+    time.sleep(0.2)
+
+
 def wait_for_new(ws, cls, known):
+    # look on every workspace: a window rule may have sent the window somewhere else
     deadline = time.time() + WAIT_PER_WINDOW
     while time.time() < deadline:
-        for c in windows_on(ws):
-            if c["class"] == cls and c["address"] not in known:
+        for c in hypr_json("clients"):
+            if c["class"] == cls and c["address"] not in known and c["mapped"]:
+                bring_here(ws, c)
                 return c["address"]
         time.sleep(0.2)
     return None
@@ -162,8 +175,7 @@ def _restore(ws, snap):
                           and c["address"] not in claimed), None)
             if other:
                 addr = other["address"]
-                dispatch(f'hl.dsp.window.move({{ workspace = {ws}, window = "address:{addr}" }})')
-                time.sleep(0.3)
+                bring_here(ws, other)
         if addr:
             claimed.add(addr)
             slots.append((saved, addr))
