@@ -2,6 +2,7 @@
 // (~/.config/Code/User/settings.json). VS Code-only extras (power mode, the
 // background image, peacock, the Claude/Copilot panels) have no Zed equivalent.
 {
+  "cli_default_open_behavior": "existing_window",
   "base_keymap": "VSCode",
   "telemetry": { "diagnostics": false, "metrics": false },
 
