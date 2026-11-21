@@ -386,6 +386,17 @@ hl.workspace_rule({
     layout    = "lua:grid",
 })
 
+hl.window_rule({
+    -- Kite Adrift filmed by agents (tools/shots.sh runs it as "KiteShots"): straight onto
+    -- workspace 40 on SHOTS, silently, so it never takes the user's focus, keyboard or mouse.
+    name             = "kite-shots",
+    match            = { class = "^(KiteShots)$" },
+    workspace        = "40 silent",
+    float            = true,
+    size             = "360 640",
+    render_unfocused = true,
+})
+
 -- smart-shell dock (~/projects/smart-shell): blur behind its glass. ignore_alpha
 -- keeps the transparent parts of the surface (room for popovers, the pet...) sharp;
 -- blur_popups gives its popovers (control center, calendar...) the same glass.
