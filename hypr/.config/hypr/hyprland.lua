@@ -615,15 +615,6 @@ hl.window_rule({
 })
 
 hl.window_rule({
-    name      = "vesktop-float",
-    match     = { class = "vesktop" },
-    float     = true,
-    size      = "1280 800",
-    center    = true,
-    workspace = "5",
-})
-
-hl.window_rule({
     name      = "slack-workspace",
     match     = { class = "slack" },
     workspace = "2",

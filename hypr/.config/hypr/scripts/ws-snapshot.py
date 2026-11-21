@@ -115,7 +115,7 @@ def bring_here(ws, client):
     if client["workspace"]["id"] != ws:
         dispatch(f'hl.dsp.window.move({{ workspace = "{ws}", window = "address:{addr}" }})')
     if client["floating"]:
-        dispatch(f'hl.dsp.window.float({{ action = "unset", window = "address:{addr}" }})')
+        dispatch(f'hl.dsp.window.float({{ action = "disable", window = "address:{addr}" }})')
     time.sleep(0.2)
 
 
