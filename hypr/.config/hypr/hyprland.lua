@@ -713,7 +713,6 @@ hl.window_rule({
     float     = true,
     size      = "1920 1200",
     center    = true,
-    workspace = "9",
 })
 
 hl.window_rule({
