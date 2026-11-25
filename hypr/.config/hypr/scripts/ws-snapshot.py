@@ -134,7 +134,7 @@ def wait_for_new(ws, cls, known):
 def restore(ws):
     path = STATE / f"ws-{ws}.json"
     if not path.exists():
-        notify(f"No snapshot for workspace {ws} (Ctrl+Shift+S saves one)")
+        notify(f"No snapshot for workspace {ws} (Ctrl+Alt+S saves one)")
         return
     snap = json.loads(path.read_text())
 

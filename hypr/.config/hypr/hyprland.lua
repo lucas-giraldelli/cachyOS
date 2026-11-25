@@ -281,10 +281,10 @@ hl.bind("ALT + SPACE",     hl.dsp.exec_cmd(menu))
 hl.bind("ALT + V",         hl.dsp.window.float({ action = "toggle" }))
 
 -- Workspace snapshot: save the tiled windows of the current workspace (command, folder,
--- size) and reopen them in the same places. Overrides apps' own Ctrl+Shift+S/R
--- (save as, hard reload) on purpose.
-hl.bind("CTRL + SHIFT + S", hl.dsp.exec_cmd("~/.config/hypr/scripts/ws-snapshot.py save"))
-hl.bind("CTRL + SHIFT + R", hl.dsp.exec_cmd("~/.config/hypr/scripts/ws-snapshot.py restore"))
+-- size) and reopen them in the same places. Ctrl+Alt so apps keep their own
+-- Ctrl+Shift+S/R (save as, hard reload).
+hl.bind("CTRL + ALT + S",   hl.dsp.exec_cmd("~/.config/hypr/scripts/ws-snapshot.py save"))
+hl.bind("CTRL + ALT + R",   hl.dsp.exec_cmd("~/.config/hypr/scripts/ws-snapshot.py restore"))
 hl.bind("ALT + Z",         hl.dsp.workspace.toggle_special("magic"))
 hl.bind("ALT + SHIFT + Z", hl.dsp.window.move({ workspace = "special:magic" }))
 
